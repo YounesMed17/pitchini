@@ -18,44 +18,77 @@ const JointFreelancerP: FunctionComponent = () => {
   const [nickname, setNickName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [number, setNumber] = useState("1");
+  const [step, setstep] = useState("1");
   const [domain, setDomain] = useState("");
   const [skills, setSkills] = useState("");
-  let ok = false;
-  const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  const navigate = useNavigate();
   const navigating = useCallback(() => {
     navigate("/signupinterview", {
       state: { first_name, last_name },
     });
   }, [navigate, first_name, last_name]);
+  let allTest = false;
+  let first = false;
+  let last = false;
+  let Email = false;
+  let Domain = false;
+  let Skills = false;
+  let Password = false;
+  let ConfirPassword = false;
 
-  function validation() {
-    if (number == "1") {
+  let nickName = false;
+  const [isNextClicked, setIsNextClicked] = useState(false);
+  if (isNextClicked) {
+    if (step === "1") {
+      if (!validateNotEmpty(first_name)) {
+        first = true;
+      } else first = false;
+
+      if (!validateNotEmpty(last_name)) {
+        last = true;
+      } else last = false;
+
       if (
-        validateEmail(email) &&
-        validateNotEmpty(first_name) &&
-        validateNotEmpty(last_name) &&
-        validateNotEmpty(nickname)
+        !validateNotEmpty(nickname) ||
+        nickname.includes(last_name) ||
+        nickname.includes(first_name)
       ) {
-        setNumber("2");
-      } else alert("inputs are wrong");
-    } else if (number == "2") {
-      if (
-        validateNotEmpty(domain) &&
-        validateNotEmpty(skills) &&
-        selectedFile != null
-      ) {
-        setNumber("3");
+        nickName = true;
+      } else nickName = false;
+
+      if (!validateEmail(email)) {
+        Email = true;
+      } else Email = false;
+    } else if (step == "2") {
+      !validateNotEmpty(domain) ? (Domain = true) : (Domain = false);
+      !validateNotEmpty(skills) ? (Skills = true) : (Skills = false);
+    } else if (step == "3") {
+      !validatePassword(password) ? (Password = true) : (Password = false);
+      password != confirmPassword
+        ? (ConfirPassword = true)
+        : (ConfirPassword = false);
+    }
+  }
+
+  async function validation() {
+    setIsNextClicked(true);
+    if (step == "1") {
+      if (!last && !first && !Email && !nickName) {
+        setstep("2");
+        setIsNextClicked(false);
       }
-    } else if (
-      number == "3" &&
-      validatePassword(password) &&
-      password == confirmPassword
-    ) {
-      ok = true;
-    } else alert("inputs wrong");
-    if (number == "3" && ok == true) {
+    }
+    if (step == "2") {
+      if (!Domain && !Skills) {
+        setstep("3");
+        setIsNextClicked(false);
+      }
+    }
+    console.log(Domain);
+    console.log(Skills);
+    if (step == "3" && !Password && !ConfirPassword) {
       const formData = {
         first_name,
         last_name,
@@ -65,14 +98,21 @@ const JointFreelancerP: FunctionComponent = () => {
         password,
       };
       // Send POST request to backend
-      send(
+      const res = send(
         formData,
         navigating,
         "http://localhost:3001/api/user/inscriptionUser"
       );
+      const userId = await res;
+      const fileFormData = {
+        link: "",
+        type: "cv/portfolio",
+        userId,
+        file: selectedFile,
+      };
+      send(fileFormData, navigating, "http://localhost:3001/api/file");
     }
   }
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -162,7 +202,7 @@ const JointFreelancerP: FunctionComponent = () => {
             </div>
           </div>
           <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
-            <div className={number == "1" ? showenInput : hiddenInput}>
+            <div className={step == "1" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="First Name"
                 type="text"
@@ -170,6 +210,8 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setfirst_name(e.target.value)
                 }
+                message="first name is required"
+                errorStatus={first}
               />
 
               <FormInput
@@ -179,6 +221,8 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setlast_name(e.target.value)
                 }
+                message="last name is required"
+                errorStatus={last}
               />
 
               <FormInput
@@ -188,6 +232,12 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setNickName(e.target.value)
                 }
+                message={
+                  nickname.includes(last_name) || nickname.includes(first_name)
+                    ? "you can't include first name or last in nickName "
+                    : "NickName is required"
+                }
+                errorStatus={nickName}
               />
 
               <FormInput
@@ -197,10 +247,14 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setEmail(e.target.value)
                 }
+                message={
+                  email == "" ? "email is required" : "email form is wrong"
+                }
+                errorStatus={Email}
               />
             </div>
 
-            <div className={number == "2" ? showenInput : hiddenInput}>
+            <div className={step == "2" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="Domaine"
                 type="text"
@@ -208,6 +262,8 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setDomain(e.target.value)
                 }
+                message="Domaine is required "
+                errorStatus={Domain}
               />
               <FormInput
                 placeHolder="Skills"
@@ -216,6 +272,8 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setSkills(e.target.value)
                 }
+                message="Skills is required "
+                errorStatus={Skills}
               />
               <div
                 className="self-stretch rounded-sm bg-silver-200 box-border flex flex-col items-center justify-start py-[30px] px-5 gap-[12px] max-w-full border-[2px] border-solid border-blue-1"
@@ -242,7 +300,7 @@ const JointFreelancerP: FunctionComponent = () => {
               </div>
             </div>
 
-            <div className={number == "3" ? showenInput : hiddenInput}>
+            <div className={step == "3" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="Password"
                 type="password"
@@ -250,6 +308,12 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setPassword(e.target.value)
                 }
+                message={
+                  password == ""
+                    ? "Password is required"
+                    : " Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+                }
+                errorStatus={Password}
               />
 
               <FormInput
@@ -259,12 +323,18 @@ const JointFreelancerP: FunctionComponent = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setConfirmPassword(e.target.value)
                 }
+                message={
+                  confirmPassword == ""
+                    ? "Password is required"
+                    : "Confirmed password do not match the password"
+                }
+                errorStatus={ConfirPassword}
               />
             </div>
           </div>
           <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[54px] box-border gap-[59px] max-w-full text-18xl text-grey mq450:pb-[35px] mq450:box-border mq725:gap-[29px_59px]">
             <div className="self-stretch flex flex-col items-center justify-center gap-[23px] max-w-full">
-              <TimeLine number={number} />
+              <TimeLine step={step} />
             </div>
             <div className="self-stretch flex flex-row items-start justify-center py-0 pr-[23px] pl-5 box-border max-w-full">
               <div className="w-[462px] flex flex-row items-start justify-start gap-[70px] max-w-full mq450:flex-wrap mq450:gap-[70px_35px]">

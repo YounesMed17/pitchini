@@ -6,26 +6,33 @@ function FormInput(props: {
   type: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
+  errorStatus: boolean;
+  message: string;
 }) {
-  const { placeHolder, type, onChange, value } = props;
+  const { placeHolder, type, onChange, value, errorStatus, message } = props;
   return (
-    <TextField
-      className="[border:none] bg-[transparent] self-stretch h-[85px] font-join-text font-medium text-darkgray"
-      placeholder={placeHolder}
-      onChange={onChange}
-      variant="outlined"
-      type={type}
-      value={value}
-      sx={{
-        "& fieldset": { borderColor: "#c4c4c4" },
-        "& .MuiInputBase-root": {
-          height: "85px",
-          borderRadius: "14px",
-          fontSize: "26px",
-        },
-        "& .MuiInputBase-input": { color: "#a09d9d" },
-      }}
-    />
+    <>
+      <TextField
+        className="[border:none] bg-[transparent] self-stretch h-[85px] font-join-text font-medium text-darkgray"
+        placeholder={placeHolder}
+        onChange={onChange}
+        variant="outlined"
+        type={type}
+        value={value}
+        sx={{
+          "& fieldset": { borderColor: "#c4c4c4" },
+          "& .MuiInputBase-root": {
+            height: "85px",
+            borderRadius: "14px",
+            fontSize: "26px",
+          },
+          "& .MuiInputBase-input": { color: "#a09d9d" },
+        }}
+      />
+      <div className={!errorStatus ? "hidden" : ""}>
+        <p className="mt-[-18px] text-red-500 text-[21px]">{message}</p>
+      </div>
+    </>
   );
 }
 export default FormInput;

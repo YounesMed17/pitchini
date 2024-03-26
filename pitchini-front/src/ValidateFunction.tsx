@@ -28,11 +28,16 @@ export async function send(
     },
     body: JSON.stringify(formData),
   });
+  const formDataLength = Object.keys(formData).length;
+  const responseBody = await response.json();
 
   if (response.ok) {
     // Success handling
     console.log("User registered successfully!");
-    navigating();
+    //console.log(responseBody.id);
+
+    formDataLength != 6 ? navigating() : "";
+    return responseBody.id;
   } else {
     // Error handling
     console.error("Failed to register user:", response.statusText);
