@@ -12,16 +12,16 @@ import { useNavigate } from "react-router-dom";
 import EnTete from "./components/EnTete";
 
 const JointFreelancerP: FunctionComponent = () => {
-  const [first_name, setfirst_name] = useState<string>("");
+  const [first_name, setfirst_name] = useState("");
   const [last_name, setlast_name] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [step, setstep] = useState("1");
+  const [step, setstep] = useState("01");
   const [domain, setDomain] = useState("");
   const [skills, setSkills] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const navigate = useNavigate();
   const navigating = useCallback(() => {
@@ -29,19 +29,29 @@ const JointFreelancerP: FunctionComponent = () => {
       state: { first_name, last_name },
     });
   }, [navigate, first_name, last_name]);
-  let allTest = false;
-  let first = false;
-  let last = false;
-  let Email = false;
-  let Domain = false;
-  let Skills = false;
-  let Password = false;
-  let ConfirPassword = false;
+  let first = true;
+  let last = true;
+  let Email = true;
+  let Domain = true;
+  let Skills = true;
+  let Password = true;
+  let ConfirPassword = true;
+  let nickName = true;
 
-  let nickName = false;
   const [isNextClicked, setIsNextClicked] = useState(false);
+
+  if (!isNextClicked) {
+    // first = false;
+    last = false;
+    Email = false;
+    //Domain = false;
+    Skills = false;
+    Password = false;
+    ConfirPassword = false;
+    nickName = false;
+  }
   if (isNextClicked) {
-    if (step === "1") {
+    if (step == "01") {
       if (!validateNotEmpty(first_name)) {
         first = true;
       } else first = false;
@@ -61,10 +71,10 @@ const JointFreelancerP: FunctionComponent = () => {
       if (!validateEmail(email)) {
         Email = true;
       } else Email = false;
-    } else if (step == "2") {
+    } else if (step == "02") {
       !validateNotEmpty(domain) ? (Domain = true) : (Domain = false);
       !validateNotEmpty(skills) ? (Skills = true) : (Skills = false);
-    } else if (step == "3") {
+    } else if (step == "03") {
       !validatePassword(password) ? (Password = true) : (Password = false);
       password != confirmPassword
         ? (ConfirPassword = true)
@@ -74,21 +84,21 @@ const JointFreelancerP: FunctionComponent = () => {
 
   async function validation() {
     setIsNextClicked(true);
-    if (step == "1") {
+    if (step == "01") {
       if (!last && !first && !Email && !nickName) {
-        setstep("2");
+        setstep("02");
         setIsNextClicked(false);
       }
     }
-    if (step == "2") {
-      if (!Domain && !Skills) {
-        setstep("3");
+    if (step == "02") {
+      if (!Domain && !Skills && selectedFiles.length > 0) {
+        setstep("03");
         setIsNextClicked(false);
       }
     }
     console.log(Domain);
     console.log(Skills);
-    if (step == "3" && !Password && !ConfirPassword) {
+    if (step == "03" && !Password && !ConfirPassword) {
       const formData = {
         first_name,
         last_name,
@@ -108,17 +118,17 @@ const JointFreelancerP: FunctionComponent = () => {
         link: "",
         type: "cv/portfolio",
         userId,
-        file: selectedFile,
+        file: selectedFiles,
       };
       send(fileFormData, navigating, "http://localhost:3001/api/file");
     }
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      // Upload the file or perform any other actions
+    const files = event.target.files;
+    if (files) {
+      setSelectedFiles([...selectedFiles, ...Array.from(files)]);
+      // Upload the files or perform any other actions
     }
   };
 
@@ -128,10 +138,10 @@ const JointFreelancerP: FunctionComponent = () => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      setSelectedFile(file);
-      // Upload the dropped file or perform any other actions
+    const droppedFiles = event.dataTransfer.files;
+    if (droppedFiles) {
+      setSelectedFiles([...selectedFiles, ...Array.from(droppedFiles)]);
+      // Upload the dropped files or perform any other actions
     }
   };
   const showenInput =
@@ -139,6 +149,7 @@ const JointFreelancerP: FunctionComponent = () => {
   const hiddenInput =
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full hidden ";
 
+  console.log(selectedFiles);
   return (
     <div className="w-full relative bg-white overflow-hidden flex flex-col items-start justify-start pt-0 px-0 pb-[57px] box-border gap-[81.40000000000146px] tracking-[normal] mq1000:gap-[41px_81.4px] mq450:gap-[20px_81.4px]">
       <EnTete></EnTete>
@@ -202,7 +213,7 @@ const JointFreelancerP: FunctionComponent = () => {
             </div>
           </div>
           <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
-            <div className={step == "1" ? showenInput : hiddenInput}>
+            <div className={step == "01" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="First Name"
                 type="text"
@@ -211,7 +222,7 @@ const JointFreelancerP: FunctionComponent = () => {
                   setfirst_name(e.target.value)
                 }
                 message="first name is required"
-                errorStatus={first}
+                errorStatus={isNextClicked ? first : false}
               />
 
               <FormInput
@@ -254,7 +265,7 @@ const JointFreelancerP: FunctionComponent = () => {
               />
             </div>
 
-            <div className={step == "2" ? showenInput : hiddenInput}>
+            <div className={step == "02" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="Domaine"
                 type="text"
@@ -263,7 +274,7 @@ const JointFreelancerP: FunctionComponent = () => {
                   setDomain(e.target.value)
                 }
                 message="Domaine is required "
-                errorStatus={Domain}
+                errorStatus={isNextClicked ? Domain : false}
               />
               <FormInput
                 placeHolder="Skills"
@@ -297,10 +308,21 @@ const JointFreelancerP: FunctionComponent = () => {
                 <h2 className="m-0 w-[601px] relative text-inherit font-medium font-inherit inline-block max-w-full mq1050:text-7xl mq450:text-lgi flex justify-center items-center">
                   <p className="m-0">Drag and drop file here or choose file</p>
                 </h2>
+                <div
+                  className={
+                    selectedFiles.length > 0 || !isNextClicked
+                      ? "hidden"
+                      : " mt-[22px]"
+                  }
+                >
+                  <p className="mt-[-18px] text-red-500 text-[21px]">
+                    put your cv/portfoli please
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className={step == "3" ? showenInput : hiddenInput}>
+            <div className={step == "03" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="Password"
                 type="password"
