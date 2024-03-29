@@ -17,6 +17,7 @@ const validatePassword = (value: string): boolean => {
 };
 
 export async function send(
+  navigationStatus: boolean,
   formData: any,
   navigating: VoidFunction,
   apiPath: string
@@ -28,7 +29,6 @@ export async function send(
     },
     body: JSON.stringify(formData),
   });
-  const formDataLength = Object.keys(formData).length;
   const responseBody = await response.json();
 
   if (response.ok) {
@@ -36,7 +36,7 @@ export async function send(
     console.log("User registered successfully!");
     //console.log(responseBody.id);
 
-    formDataLength != 6 ? navigating() : "";
+    navigationStatus ? navigating() : "";
     return responseBody.id;
   } else {
     // Error handling

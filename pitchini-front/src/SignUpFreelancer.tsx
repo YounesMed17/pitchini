@@ -46,7 +46,7 @@ const JointFreelancerP: FunctionComponent = () => {
     Email = false;
     //Domain = false;
     Skills = false;
-    Password = false;
+    //Password = false;
     ConfirPassword = false;
     nickName = false;
   }
@@ -81,9 +81,11 @@ const JointFreelancerP: FunctionComponent = () => {
         : (ConfirPassword = false);
     }
   }
-
-  async function validation() {
+  function validation() {
     setIsNextClicked(true);
+    validation2();
+  }
+  async function validation2() {
     if (step == "01") {
       if (!last && !first && !Email && !nickName) {
         setstep("02");
@@ -96,9 +98,9 @@ const JointFreelancerP: FunctionComponent = () => {
         setIsNextClicked(false);
       }
     }
-    console.log(Domain);
-    console.log(Skills);
+
     if (step == "03" && !Password && !ConfirPassword) {
+      console.log(password);
       const formData = {
         first_name,
         last_name,
@@ -109,6 +111,7 @@ const JointFreelancerP: FunctionComponent = () => {
       };
       // Send POST request to backend
       const res = send(
+        false,
         formData,
         navigating,
         "http://localhost:3001/api/user/inscriptionUser"
@@ -120,7 +123,7 @@ const JointFreelancerP: FunctionComponent = () => {
         userId,
         file: selectedFiles,
       };
-      send(fileFormData, navigating, "http://localhost:3001/api/file");
+      send(true, fileFormData, navigating, "http://localhost:3001/api/file");
     }
   }
 
@@ -244,9 +247,9 @@ const JointFreelancerP: FunctionComponent = () => {
                   setNickName(e.target.value)
                 }
                 message={
-                  nickname.includes(last_name) || nickname.includes(first_name)
-                    ? "you can't include first name or last in nickName "
-                    : "NickName is required"
+                  nickname == ""
+                    ? "NickName is required"
+                    : "you can't include first name or last in nickName "
                 }
                 errorStatus={nickName}
               />
@@ -350,7 +353,7 @@ const JointFreelancerP: FunctionComponent = () => {
                     ? "Password is required"
                     : "Confirmed password do not match the password"
                 }
-                errorStatus={ConfirPassword}
+                errorStatus={isNextClicked ? ConfirPassword : false}
               />
             </div>
           </div>

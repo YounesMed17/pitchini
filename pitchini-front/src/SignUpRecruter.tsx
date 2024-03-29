@@ -29,30 +29,71 @@ const SignUp: FunctionComponent = () => {
     });
   }, [navigate, first_name, last_name]);
 
-  function validation() {
+  const [step, setstep] = useState("01");
+
+  const [isNextClicked, setIsNextClicked] = useState(false);
+  let first = true;
+  let last = true;
+  let Email = true;
+  let Password = true;
+  let ConfirPassword = true;
+  let nickName = true;
+  if (!isNextClicked) {
+    last = false;
+    Email = false;
+    Password = false;
+    ConfirPassword = false;
+    nickName = false;
+  }
+
+  if (isNextClicked) {
+    if (!validateNotEmpty(first_name)) {
+      first = true;
+    } else first = false;
+
+    if (!validateNotEmpty(last_name)) {
+      last = true;
+    } else last = false;
+
     if (
-      validateEmail(email) &&
-      validatePassword(password) &&
-      password == confirmPassword &&
-      validateNotEmpty(first_name) &&
-      validateNotEmpty(last_name) &&
-      validateNotEmpty(nickname)
+      !validateNotEmpty(nickname) ||
+      nickname.includes(last_name) ||
+      nickname.includes(first_name)
     ) {
+      nickName = true;
+    } else nickName = false;
+
+    if (!validateEmail(email)) {
+      Email = true;
+    } else Email = false;
+    !validatePassword(password) ? (Password = true) : (Password = false);
+    password != confirmPassword
+      ? (ConfirPassword = true)
+      : (ConfirPassword = false);
+  }
+
+  function validation() {
+    setIsNextClicked(true);
+    if (!last && !first && !Email && !nickName && !Password && !ConfirPassword)
+      setstep("02");
+
+    if (step == "02") {
+      console.log("aaaaa");
       const formData = {
         first_name,
         last_name,
         email,
         password,
         nickname,
+        role: "client",
       };
       // Send POST request to backend
       send(
+        true,
         formData,
         navigating,
         "http://localhost:3001/api/user/inscriptionUser"
       );
-    } else {
-      alert("inputs are wrong");
     }
   }
 
@@ -128,6 +169,8 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setfirst_name(e.target.value)
                   }
+                  message="first name is required"
+                  errorStatus={isNextClicked ? first : false}
                 />
 
                 <FormInput
@@ -137,6 +180,8 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setlast_name(e.target.value)
                   }
+                  message="last name is required"
+                  errorStatus={last}
                 />
 
                 <FormInput
@@ -146,6 +191,12 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setNickName(e.target.value)
                   }
+                  message={
+                    nickname == ""
+                      ? "NickName is required"
+                      : "you can't include first name or last in nickName "
+                  }
+                  errorStatus={nickName}
                 />
 
                 <FormInput
@@ -155,8 +206,11 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setEmail(e.target.value)
                   }
+                  message={
+                    email == "" ? "email is required" : "email form is wrong"
+                  }
+                  errorStatus={Email}
                 />
-
                 <FormInput
                   placeHolder="Password"
                   type="password"
@@ -164,7 +218,14 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setPassword(e.target.value)
                   }
+                  message={
+                    password == ""
+                      ? "Password is required"
+                      : " Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+                  }
+                  errorStatus={Password}
                 />
+
                 <FormInput
                   placeHolder="Confirm password"
                   type="password"
@@ -172,6 +233,12 @@ const SignUp: FunctionComponent = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setConfirmPassword(e.target.value)
                   }
+                  message={
+                    confirmPassword == ""
+                      ? "Password is required"
+                      : "Confirmed password do not match the password"
+                  }
+                  errorStatus={ConfirPassword}
                 />
               </div>
 
