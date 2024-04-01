@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUpFreelancer from "./SignUpFreelancer";
 import SignUp from "./SignUpRecruter";
+//import PostProject from "./PostProject";
 function App() {
   return (
     <>

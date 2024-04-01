@@ -16,32 +16,4 @@ const validatePassword = (value: string): boolean => {
   return regex.test(value);
 };
 
-export async function send(
-  navigationStatus: boolean,
-  formData: any,
-  navigating: VoidFunction,
-  apiPath: string
-) {
-  const response = await fetch(apiPath, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  });
-  const responseBody = await response.json();
-
-  if (response.ok) {
-    // Success handling
-    console.log("User registered successfully!");
-    //console.log(responseBody.id);
-
-    navigationStatus ? navigating() : "";
-    return responseBody.id;
-  } else {
-    // Error handling
-    console.error("Failed to register user:", response.statusText);
-  }
-}
-
 export { validateEmail, validateNotEmpty, validatePassword };

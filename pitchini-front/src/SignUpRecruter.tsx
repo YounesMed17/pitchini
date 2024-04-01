@@ -9,11 +9,12 @@ import EnTete from "./components/EnTete";
 import FormInput from "./components/FormInput";
 import { useNavigate } from "react-router-dom";
 import {
-  send,
   validateEmail,
   validateNotEmpty,
   validatePassword,
-} from "./ValidateFunction";
+} from "./utilFunctions/ValidateFunction";
+import { send } from "./utilFunctions/sendData";
+import SignUpSecondHeader from "./components/SignUpSecondHeader";
 
 const SignUp: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState<string>("");
@@ -103,63 +104,7 @@ const SignUp: FunctionComponent = () => {
         <EnTete />
         <section className="self-stretch flex flex-row items-start justify-center pt-0 px-5 pb-[6062.700000000001px] box-border max-w-full shrink-0 text-left text-44xl text-grey font-join-text lg:pb-[1665px] lg:box-border mq450:pb-[703px] mq450:box-border mq1050:pb-[1082px] mq1050:box-border">
           <div className="w-[972px] flex flex-col items-start justify-start gap-[77px] max-w-full mq750:gap-[19px_77px] mq1050:gap-[38px_77px]">
-            <div className="self-stretch flex flex-row items-start justify-start py-0 pr-1 pl-[5px] box-border max-w-full text-center">
-              <div className="flex-1 flex flex-col items-start justify-start max-w-full">
-                <h1 className="m-0 self-stretch h-[124px] relative text-inherit font-semibold font-inherit text-transparent !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block shrink-0 [text-shadow:1px_0_0_#000,_0_1px_0_#000,_-1px_0_0_#000,_0_-1px_0_#000] mq450:text-[38px] mq1050:text-[50px]">
-                  Create your PITCHINI Account
-                </h1>
-                <div className="self-stretch flex flex-row items-start justify-start py-0 px-[30px] box-border max-w-full mt-[-13px] text-[25px]">
-                  <div className="flex-1 flex flex-col items-start justify-start gap-[59px] max-w-full mq450:gap-[29px_59px]">
-                    <div className="self-stretch relative leading-[37px] font-medium mq450:text-xl mq450:leading-[29px]">
-                      Are you using PITCHINI as a Recruiter or a Freelancer ?
-                    </div>
-                    <div className="self-stretch h-[517px] flex flex-row items-start justify-center py-0 pr-[22px] pl-5 box-border max-w-full">
-                      <img
-                        className="h-[517px] w-[645px] relative object-cover max-w-full"
-                        loading="lazy"
-                        alt=""
-                        src="/login02-converti02-1@2x.png"
-                      />
-                    </div>
-                    <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
-                      <div className="w-[595px] flex flex-row items-start justify-center gap-[9px] max-w-full mq750:flex-wrap">
-                        <Button
-                          className="h-[79px] flex-[0.4334] min-w-[190px] mq750:flex-1"
-                          //disableElevation={false}
-                          variant="contained"
-                          sx={{
-                            textTransform: "none",
-                            color: "#c4c4c4",
-                            fontSize: "28",
-                            background: "#fff",
-                            borderRadius: "6px",
-                            "&:hover": { background: "#fff" },
-                            height: 79,
-                          }}
-                        >
-                          Freelancer
-                        </Button>
-                        <Button
-                          className="h-[79px] flex-[0.4334] min-w-[190px] mq750:flex-1"
-                          variant="contained"
-                          sx={{
-                            textTransform: "none",
-                            color: "#2f80ed",
-                            fontSize: "28",
-                            background: "#fff",
-                            borderRadius: "6px",
-                            "&:hover": { background: "#fff" },
-                            height: 79,
-                          }}
-                        >
-                          Recruiter
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <SignUpSecondHeader />
             <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[85px] box-border gap-[78px] max-w-full text-13xl text-blue mq450:pb-9 mq450:box-border mq750:gap-[19px_78px] mq1050:gap-[39px_78px] mq1050:pb-[55px] mq1050:box-border">
               <div className="self-stretch flex flex-col items-start justify-start gap-[21px] max-w-full">
                 <FormInput

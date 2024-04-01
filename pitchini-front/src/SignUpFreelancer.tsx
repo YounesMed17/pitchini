@@ -1,15 +1,25 @@
-import { ChangeEvent, FunctionComponent, useCallback, useState } from "react";
-import { Button } from "@mui/material";
+import {
+  ChangeEvent,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { Button, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import TimeLine from "./components/TimeLine";
 import FormInput from "./components/FormInput";
 import {
-  send,
   validateEmail,
   validateNotEmpty,
   validatePassword,
-} from "./ValidateFunction";
+} from "./utilFunctions/ValidateFunction";
 import { useNavigate } from "react-router-dom";
 import EnTete from "./components/EnTete";
+import { send } from "./utilFunctions/sendData";
+import { get } from "./utilFunctions/getData";
+//import SignUpSecondHeader from "./components/SignUpSecondHeader";
+import DropDown from "./components/dropDownInput";
+import SignUpSecondHeader from "./components/SignUpSecondHeader";
 
 const JointFreelancerP: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState("");
@@ -19,9 +29,48 @@ const JointFreelancerP: FunctionComponent = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [step, setstep] = useState("01");
-  const [domain, setDomain] = useState("");
-  const [skills, setSkills] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  // Define onChange handlers
+  const [domainAndSkills, setDomainAndSkills] = useState<any[]>([]); // Define domainAndSkills state
+  const [skills, setSkills] = useState<string[]>([]); // Initialize skills state as an array
+  const [domain, setDomain] = useState<string[]>([]); // Initialize skills state as an array
+  const [filteredDomainAndSkills, setFilteredDomainAndSkills] = useState<any[]>(
+    []
+  ); // Define domainAndSkills state
+
+  useEffect(() => {
+    const filteredSkills: any[] = [];
+    // Filter domainAndSkills based on selected domains
+    domainAndSkills.forEach((item) => {
+      if (domain.includes(item.domaine)) {
+        filteredSkills.push(item);
+      }
+    });
+    // Update selected skills state
+    setFilteredDomainAndSkills(filteredSkills);
+  }, [domain, domainAndSkills]);
+  // Modify the change handler for skills
+  const handleSkillChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+    const selectedValue = event.target.value;
+    if (typeof selectedValue === "string") {
+      setSkills([selectedValue]); // Update skills state with single selected value
+    } else if (Array.isArray(selectedValue)) {
+      setSkills(selectedValue as string[]); // Update skills state with selected array
+    }
+  };
+  const handleDomainChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+    const selectedValue = event.target.value;
+    if (
+      domain.length < 2 ||
+      domain.includes(selectedValue[selectedValue.length - 1])
+    ) {
+      if (typeof selectedValue === "string") {
+        setDomain([selectedValue]); // Update skills state with single selected value
+      } else if (Array.isArray(selectedValue)) {
+        setDomain(selectedValue as string[]); // Update skills state with selected array
+      }
+    }
+  };
 
   const navigate = useNavigate();
   const navigating = useCallback(() => {
@@ -39,6 +88,22 @@ const JointFreelancerP: FunctionComponent = () => {
   let nickName = true;
 
   const [isNextClicked, setIsNextClicked] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await get();
+      const values = await res;
+
+      const domainAndSkillsData = values.map((skill) => ({
+        domaine: skill.domaine,
+        skills: skill.skillName,
+      }));
+
+      setDomainAndSkills(domainAndSkillsData);
+    }
+
+    fetchData();
+  }, []);
 
   if (!isNextClicked) {
     // first = false;
@@ -72,8 +137,8 @@ const JointFreelancerP: FunctionComponent = () => {
         Email = true;
       } else Email = false;
     } else if (step == "02") {
-      !validateNotEmpty(domain) ? (Domain = true) : (Domain = false);
-      !validateNotEmpty(skills) ? (Skills = true) : (Skills = false);
+      domain.length == 0 ? (Domain = true) : (Domain = false);
+      skills.length == 0 ? (Skills = true) : (Skills = false);
     } else if (step == "03") {
       !validatePassword(password) ? (Password = true) : (Password = false);
       password != confirmPassword
@@ -81,6 +146,7 @@ const JointFreelancerP: FunctionComponent = () => {
         : (ConfirPassword = false);
     }
   }
+
   function validation() {
     setIsNextClicked(true);
     validation2();
@@ -100,7 +166,6 @@ const JointFreelancerP: FunctionComponent = () => {
     }
 
     if (step == "03" && !Password && !ConfirPassword) {
-      console.log(password);
       const formData = {
         first_name,
         last_name,
@@ -117,6 +182,7 @@ const JointFreelancerP: FunctionComponent = () => {
         "http://localhost:3001/api/user/inscriptionUser"
       );
       const userId = await res;
+
       const fileFormData = {
         link: "",
         type: "cv/portfolio",
@@ -124,6 +190,25 @@ const JointFreelancerP: FunctionComponent = () => {
         file: selectedFiles,
       };
       send(true, fileFormData, navigating, "http://localhost:3001/api/file");
+      for (let j = 0; j < skills.length; j++) {
+        for (let i = 0; i < filteredDomainAndSkills.length; i++) {
+          if (skills[j] == filteredDomainAndSkills[i].skills) {
+            let skillsData = {
+              userId: userId,
+              domaine: filteredDomainAndSkills[i].domaine,
+              skillName: filteredDomainAndSkills[i].skills,
+            };
+
+            //console.log(skillsData);
+            send(
+              false,
+              skillsData,
+              navigating,
+              "http://localhost:3001/api/userskills"
+            );
+          }
+        }
+      }
     }
   }
 
@@ -152,69 +237,12 @@ const JointFreelancerP: FunctionComponent = () => {
   const hiddenInput =
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full hidden ";
 
-  console.log(selectedFiles);
   return (
     <div className="w-full relative bg-white overflow-hidden flex flex-col items-start justify-start pt-0 px-0 pb-[57px] box-border gap-[81.40000000000146px] tracking-[normal] mq1000:gap-[41px_81.4px] mq450:gap-[20px_81.4px]">
       <EnTete></EnTete>
       <main className="self-stretch flex flex-row items-start justify-center py-0 pr-[21px] pl-5 box-border max-w-full">
         <section className="w-[1063.3px] flex flex-col items-start justify-start gap-[77px] max-w-full text-left text-44xl text-grey2 font-titre-grey mq1050:gap-[38px_77px] mq725:gap-[19px_77px]">
-          <div className="self-stretch flex flex-row items-start justify-start py-0 pr-[49px] pl-[51px] box-border max-w-full shrink-0 text-center mq1050:pl-[25px] mq1050:pr-6 mq1050:box-border">
-            <div className="flex-1 flex flex-col items-start justify-start gap-[8.400000000001455px] max-w-full">
-              <h1 className="m-0 self-stretch relative text-inherit font-semibold font-inherit text-transparent !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] [text-shadow:1px_0_0_#000,_0_1px_0_#000,_-1px_0_0_#000,_0_-1px_0_#000] z-[1] mq1000:text-31xl mq450:text-19xl">
-                Create your PITCHINI Account
-              </h1>
-              <div className="self-stretch flex flex-row items-start justify-start py-0 px-[30px] box-border max-w-full text-6xl">
-                <div className="flex-1 flex flex-col items-start justify-start gap-[59px] max-w-full mq450:gap-[29px_59px]">
-                  <div className="self-stretch relative leading-[37px] font-medium mq450:text-xl mq450:leading-[29px]">
-                    Are you using PITCHINI as a Recruiter or a Freelancer ?
-                  </div>
-                  <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
-                    <img
-                      className="w-[645px] relative max-h-full object-cover max-w-full"
-                      loading="lazy"
-                      alt=""
-                      src="/login02-converti02-1@2x.png"
-                    />
-                  </div>
-                  <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
-                    <div className="w-[595px] flex flex-row items-start justify-center gap-[9px] max-w-full mq725:flex-wrap">
-                      <Button
-                        className="h-[79px] flex-[0.4573] min-w-[190px] mq725:flex-1"
-                        variant="contained"
-                        sx={{
-                          textTransform: "none",
-                          color: "#2f80ed",
-                          fontSize: "28",
-                          background: "#fff",
-                          borderRadius: "6px",
-                          "&:hover": { background: "#fff" },
-                          height: 79,
-                        }}
-                      >
-                        Freelancer
-                      </Button>
-                      <Button
-                        className="h-[79px] flex-1 relative min-w-[190px] mq725:flex-1"
-                        disableElevation={true}
-                        variant="contained"
-                        sx={{
-                          textTransform: "none",
-                          color: "#c4c4c4",
-                          fontSize: "28",
-                          background: "#fff",
-                          borderRadius: "6px",
-                          "&:hover": { background: "#fff" },
-                          height: 79,
-                        }}
-                      >
-                        Recruiter
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SignUpSecondHeader />
           <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
             <div className={step == "01" ? showenInput : hiddenInput}>
               <FormInput
@@ -269,26 +297,63 @@ const JointFreelancerP: FunctionComponent = () => {
             </div>
 
             <div className={step == "02" ? showenInput : hiddenInput}>
-              <FormInput
-                placeHolder="Domaine"
-                type="text"
-                value={domain}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setDomain(e.target.value)
-                }
-                message="Domaine is required "
-                errorStatus={isNextClicked ? Domain : false}
-              />
-              <FormInput
-                placeHolder="Skills"
-                type="text"
-                value={skills}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setSkills(e.target.value)
-                }
-                message="Skills is required "
-                errorStatus={Skills}
-              />
+              <Select
+                className="w-[50%]"
+                labelId="select-label"
+                id="select"
+                value={domain} // Set the selected value
+                onChange={handleDomainChange} // Handle change event
+                displayEmpty // to see the label select domain
+                multiple
+                renderValue={(selected) => (
+                  <div>
+                    {selected.length === 0
+                      ? "Select max 2 domains"
+                      : selected.join(", ")}
+                  </div>
+                )}
+              >
+                {domainAndSkills.map((val, index) => (
+                  <MenuItem key={index} value={val.domaine}>
+                    {val.domaine}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <div className={!Domain || !isNextClicked ? "hidden" : ""}>
+                <p className="mt-[-18px] text-red-500 text-[21px]">
+                  you need to select 1 domain at least
+                </p>
+              </div>
+
+              <Select
+                className="w-[50%]"
+                labelId="select-label"
+                id="select"
+                value={skills} // Set the selected value as an array
+                onChange={handleSkillChange} // Handle change event
+                displayEmpty // to see the label select domain
+                multiple // Allow multiple choices
+                renderValue={(selected) => (
+                  <div>
+                    {selected.length < 1
+                      ? "select skills"
+                      : selected.join(", ")}
+                  </div>
+                )}
+              >
+                {filteredDomainAndSkills.map((val, index) => (
+                  <MenuItem key={index} value={val.skills}>
+                    {val.skills}
+                  </MenuItem>
+                ))}
+              </Select>
+              <div className={!Skills || !isNextClicked ? "hidden" : ""}>
+                <p className="mt-[-18px] text-red-500 text-[21px]">
+                  you need to select 1 skill at least
+                </p>
+              </div>
+
               <div
                 className="self-stretch rounded-sm bg-silver-200 box-border flex flex-col items-center justify-start py-[30px] px-5 gap-[12px] max-w-full border-[2px] border-solid border-blue-1"
                 onDragOver={handleDragOver}
@@ -338,7 +403,7 @@ const JointFreelancerP: FunctionComponent = () => {
                     ? "Password is required"
                     : " Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
                 }
-                errorStatus={Password}
+                errorStatus={isNextClicked ? Password : false}
               />
 
               <FormInput
@@ -353,7 +418,7 @@ const JointFreelancerP: FunctionComponent = () => {
                     ? "Password is required"
                     : "Confirmed password do not match the password"
                 }
-                errorStatus={isNextClicked ? ConfirPassword : false}
+                errorStatus={ConfirPassword}
               />
             </div>
           </div>
@@ -408,5 +473,4 @@ const JointFreelancerP: FunctionComponent = () => {
     </div>
   );
 };
-
 export default JointFreelancerP;
