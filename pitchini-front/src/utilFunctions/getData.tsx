@@ -1,6 +1,5 @@
-export async function get() {
-  // apiPath: string
-  const response = await fetch("http://localhost:3001/api/skills/all", {
+export async function get(path: string) {
+  const response = await fetch(path, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

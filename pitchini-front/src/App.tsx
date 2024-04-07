@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUpFreelancer from "./SignUpFreelancer";
 import SignUp from "./SignUpRecruter";
-//import PostProject from "./PostProject";
+import PostProject from "./PostProject";
 function App() {
   return (
     <>
@@ -12,6 +12,7 @@ function App() {
           <Route path="/signuprecruter" element={<SignUp />} />
           <Route path="SignUpInterview" element={<SignUpInterview />} />
           <Route path="SignUpfreelancer" element={<SignUpFreelancer />} />
+          <Route path="postProject" element={<PostProject />} />
         </Routes>
       </BrowserRouter>
     </>

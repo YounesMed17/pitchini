@@ -4,26 +4,34 @@ export async function send(
   navigating: VoidFunction,
   apiPath: string
 ) {
-  console.log("this is formdata");
   console.log(formData);
-  const response = await fetch(apiPath, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  });
-  const responseBody = await response.json();
 
-  if (response.ok) {
-    // Success handling
+  try {
+    const response = await fetch(apiPath, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to register user: ${response.statusText}`);
+    }
+
+    const responseBody = await response.json();
+
     console.log("User registered successfully!");
-    //console.log(responseBody.id);
+    console.log(responseBody.id);
 
-    navigationStatus ? navigating() : "";
+    if (navigationStatus) {
+      navigating();
+    }
+
     return responseBody.id;
-  } else {
-    // Error handling
-    console.error("Failed to register user:", response.statusText);
+  } catch (error) {
+    console.error("Failed to register user:", error.message);
+    // Handle the error gracefully here (e.g., show an error message to the user)
+    throw error; // Propagate the error for further handling if needed
   }
 }

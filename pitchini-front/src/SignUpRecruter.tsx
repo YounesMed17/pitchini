@@ -14,7 +14,7 @@ import {
   validatePassword,
 } from "./utilFunctions/ValidateFunction";
 import { send } from "./utilFunctions/sendData";
-import SignUpSecondHeader from "./components/SignUpSecondHeader";
+import SignUpSecondHeader from "./components/SecondHeader";
 
 const SignUp: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState<string>("");
@@ -104,7 +104,12 @@ const SignUp: FunctionComponent = () => {
         <EnTete />
         <section className="self-stretch flex flex-row items-start justify-center pt-0 px-5 pb-[6062.700000000001px] box-border max-w-full shrink-0 text-left text-44xl text-grey font-join-text lg:pb-[1665px] lg:box-border mq450:pb-[703px] mq450:box-border mq1050:pb-[1082px] mq1050:box-border">
           <div className="w-[972px] flex flex-col items-start justify-start gap-[77px] max-w-full mq750:gap-[19px_77px] mq1050:gap-[38px_77px]">
-            <SignUpSecondHeader />
+            <SignUpSecondHeader
+              path="/login02-converti02-1@2x.png"
+              title2="Are you using PITCHINI as a Recruiter or a Freelancer ?"
+              title1=" Create your PITCHINI Account"
+              showButtons={true}
+            />
             <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[85px] box-border gap-[78px] max-w-full text-13xl text-blue mq450:pb-9 mq450:box-border mq750:gap-[19px_78px] mq1050:gap-[39px_78px] mq1050:pb-[55px] mq1050:box-border">
               <div className="self-stretch flex flex-col items-start justify-start gap-[21px] max-w-full">
                 <FormInput
@@ -116,6 +121,7 @@ const SignUp: FunctionComponent = () => {
                   }
                   message="first name is required"
                   errorStatus={isNextClicked ? first : false}
+                  textArea={false}
                 />
 
                 <FormInput
@@ -127,6 +133,7 @@ const SignUp: FunctionComponent = () => {
                   }
                   message="last name is required"
                   errorStatus={last}
+                  textArea={false}
                 />
 
                 <FormInput
@@ -142,6 +149,7 @@ const SignUp: FunctionComponent = () => {
                       : "you can't include first name or last in nickName "
                   }
                   errorStatus={nickName}
+                  textArea={false}
                 />
 
                 <FormInput
@@ -155,6 +163,7 @@ const SignUp: FunctionComponent = () => {
                     email == "" ? "email is required" : "email form is wrong"
                   }
                   errorStatus={Email}
+                  textArea={false}
                 />
                 <FormInput
                   placeHolder="Password"
@@ -169,6 +178,7 @@ const SignUp: FunctionComponent = () => {
                       : " Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
                   }
                   errorStatus={Password}
+                  textArea={false}
                 />
 
                 <FormInput
@@ -184,6 +194,7 @@ const SignUp: FunctionComponent = () => {
                       : "Confirmed password do not match the password"
                   }
                   errorStatus={ConfirPassword}
+                  textArea={false}
                 />
               </div>
 

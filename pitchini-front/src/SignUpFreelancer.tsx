@@ -17,9 +17,7 @@ import { useNavigate } from "react-router-dom";
 import EnTete from "./components/EnTete";
 import { send } from "./utilFunctions/sendData";
 import { get } from "./utilFunctions/getData";
-//import SignUpSecondHeader from "./components/SignUpSecondHeader";
-import DropDown from "./components/dropDownInput";
-import SignUpSecondHeader from "./components/SignUpSecondHeader";
+import SignUpSecondHeader from "./components/SecondHeader";
 
 const JointFreelancerP: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState("");
@@ -30,7 +28,7 @@ const JointFreelancerP: FunctionComponent = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [step, setstep] = useState("01");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  // Define onChange handlers
+  const [isNextClicked, setIsNextClicked] = useState(false);
   const [domainAndSkills, setDomainAndSkills] = useState<any[]>([]); // Define domainAndSkills state
   const [skills, setSkills] = useState<string[]>([]); // Initialize skills state as an array
   const [domain, setDomain] = useState<string[]>([]); // Initialize skills state as an array
@@ -87,16 +85,14 @@ const JointFreelancerP: FunctionComponent = () => {
   let ConfirPassword = true;
   let nickName = true;
 
-  const [isNextClicked, setIsNextClicked] = useState(false);
-
   useEffect(() => {
     async function fetchData() {
-      const res = await get();
+      const res = await get("http://localhost:3001/api/skills/all");
       const values = await res;
 
-      const domainAndSkillsData = values.map((skill) => ({
-        domaine: skill.domaine,
-        skills: skill.skillName,
+      const domainAndSkillsData = values.map((item) => ({
+        domaine: item.domaine,
+        skills: item.skillName,
       }));
 
       setDomainAndSkills(domainAndSkillsData);
@@ -106,12 +102,9 @@ const JointFreelancerP: FunctionComponent = () => {
   }, []);
 
   if (!isNextClicked) {
-    // first = false;
     last = false;
     Email = false;
-    //Domain = false;
     Skills = false;
-    //Password = false;
     ConfirPassword = false;
     nickName = false;
   }
@@ -182,14 +175,7 @@ const JointFreelancerP: FunctionComponent = () => {
         "http://localhost:3001/api/user/inscriptionUser"
       );
       const userId = await res;
-
-      const fileFormData = {
-        link: "",
-        type: "cv/portfolio",
-        userId,
-        file: selectedFiles,
-      };
-      send(true, fileFormData, navigating, "http://localhost:3001/api/file");
+      /*
       for (let j = 0; j < skills.length; j++) {
         for (let i = 0; i < filteredDomainAndSkills.length; i++) {
           if (skills[j] == filteredDomainAndSkills[i].skills) {
@@ -208,7 +194,15 @@ const JointFreelancerP: FunctionComponent = () => {
             );
           }
         }
-      }
+      }*/
+      const fileFormData = {
+        link: "dz",
+        type: "cv/portfolio",
+        userId,
+        file: selectedFiles[selectedFiles.length - 1],
+      };
+      console.log(fileFormData);
+      send(false, fileFormData, navigating, "http://localhost:3001/api/file");
     }
   }
 
@@ -242,7 +236,12 @@ const JointFreelancerP: FunctionComponent = () => {
       <EnTete></EnTete>
       <main className="self-stretch flex flex-row items-start justify-center py-0 pr-[21px] pl-5 box-border max-w-full">
         <section className="w-[1063.3px] flex flex-col items-start justify-start gap-[77px] max-w-full text-left text-44xl text-grey2 font-titre-grey mq1050:gap-[38px_77px] mq725:gap-[19px_77px]">
-          <SignUpSecondHeader />
+          <SignUpSecondHeader
+            path="/2201-1@2x.png"
+            title1="tw n9oul l nour "
+            title2="dez"
+            showButtons={true}
+          />
           <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
             <div className={step == "01" ? showenInput : hiddenInput}>
               <FormInput
