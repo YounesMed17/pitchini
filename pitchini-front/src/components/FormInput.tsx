@@ -19,14 +19,14 @@ function FormInput(props: {
       {textArea ? (
         <TextareaAutosize
           aria-label="empty textarea"
-          placeholder=".."
+          placeholder={placeHolder}
           onChange={onChange}
           value={value}
           style={{
             border: "1px solid #c4c4c4",
             backgroundColor: "transparent",
             height: "185px",
-            fontSize: "26px",
+            fontSize: "21px",
             borderRadius: "14px",
             padding: "16px",
             resize: "none",
@@ -46,16 +46,16 @@ function FormInput(props: {
           sx={{
             "& fieldset": { borderColor: "#c4c4c4" },
             "& .MuiInputBase-root": {
-              height: "85px",
+              height: "65px",
               borderRadius: "14px",
-              fontSize: "26px",
+              fontSize: "21px",
             },
             "& .MuiInputBase-input": { color: "#a09d9d" },
           }}
         />
       )}
       <div className={!errorStatus ? "hidden" : ""}>
-        <p className="mt-[-18px] text-red-500 text-[21px]">{message}</p>
+        <p className="mt-[-17px] text-red-500 text-[16px]">{message}</p>
       </div>
     </>
   );

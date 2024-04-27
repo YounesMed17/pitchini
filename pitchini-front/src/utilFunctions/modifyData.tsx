@@ -1,14 +1,9 @@
-export async function send(
-  navigationStatus: boolean,
-  formData: any,
-  navigating: VoidFunction,
-  apiPath: string
-) {
+export async function modifyData(formData: any, apiPath: string) {
   console.log(formData);
 
   try {
     const response = await fetch(apiPath, {
-      method: "POST",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -22,12 +17,6 @@ export async function send(
     const responseBody = await response.json();
 
     console.log("data registered successfully!");
-    console.log(responseBody.id);
-
-    if (navigationStatus) {
-      navigating();
-    }
-
     return responseBody.id;
   } catch (error) {
     console.error("Failed to register data:", error.message);

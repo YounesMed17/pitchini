@@ -1,21 +1,8 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { get } from "../utilFunctions/getData";
 //import { useNavigate } from "react-router-dom";
 
 const EnTete: FunctionComponent = () => {
-  /*const navigate = useNavigate();
-
-  const onLogoPitchini1Click = useCallback(() => {
-    navigate("/");
-  }, [navigate]);
-
-  const onContactTextClick = useCallback(() => {
-    // Please sync "Contact Page " to the project
-  }, []);
-
-  const onLoginTextClick = useCallback(() => {
-    navigate("/login");
-  }, [navigate]);*/
-
   return (
     <header className="self-stretch h-[127px] bg-whitesmoke-100 flex flex-row items-start justify-between py-[17.5px] pr-[42px] pl-[41px] box-border top-[0] z-[99] sticky max-w-full gap-[20px] text-center text-xl text-gray-200 font-join-text mq750:pr-[21px] mq750:box-border">
       <img

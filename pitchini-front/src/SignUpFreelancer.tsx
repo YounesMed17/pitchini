@@ -238,8 +238,8 @@ const JointFreelancerP: FunctionComponent = () => {
         <section className="w-[1063.3px] flex flex-col items-start justify-start gap-[77px] max-w-full text-left text-44xl text-grey2 font-titre-grey mq1050:gap-[38px_77px] mq725:gap-[19px_77px]">
           <SignUpSecondHeader
             path="/2201-1@2x.png"
-            title1="tw n9oul l nour "
-            title2="dez"
+            title1="Create your pitchini account "
+            title2="Are you using pitchini as a recruter or a freelancer"
             showButtons={true}
           />
           <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">

@@ -199,8 +199,6 @@ const PostProject: FunctionComponent = () => {
                   navigating,
                   "http://localhost:3001/api/projectServicesList/addS"
                 );
-
-                console.log("Service added successfully");
               }
             }
           } else {

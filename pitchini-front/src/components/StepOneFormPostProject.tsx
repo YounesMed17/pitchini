@@ -72,7 +72,7 @@ const StepOneFormPostProject: FunctionComponent<StepOneContentProps> = ({
         </p>
       </div>
       <FormInput
-        placeHolder="Exemple: Create a WordPress website for my company"
+        placeHolder="..."
         type="text"
         value={description}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
