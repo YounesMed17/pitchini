@@ -10,7 +10,6 @@ import {
 import FreelancerToChose from "./components/FreelancerToChose";
 import SideBar from "./components/SideBar";
 import { get } from "./utilFunctions/getData";
-import { RateReview } from "@mui/icons-material";
 
 const FreelancersList: FunctionComponent = () => {
   const [skills, setSkills] = useState<string[]>([]);
@@ -138,7 +137,7 @@ const FreelancersList: FunctionComponent = () => {
       <div className="w-[33px] h-[33px] relative hidden opacity-[0.29] z-[3]" />
       <main className="w-[1356px] flex flex-row items-start justify-start py-0 pr-5 pl-0 box-border gap-[74.4px] max-w-full text-center text-6xl-4 text-gray-200 font-titre-grey mq450:gap-[19px] mq750:gap-[37px] mq750:pl-5 mq750:box-border">
         <SideBar></SideBar>
-        <section className="flex-1 flex flex-col items-start justify-start pt-[53px] px-0 pb-0 box-border max-w-[calc(100%_-_289px)] lg:pt-[34px] lg:box-border mq750:pt-[22px] mq750:box-border mq750:max-w-full">
+        <section className="flex-1 mt-[50px] flex flex-col items-start justify-start pt-[53px] px-0 pb-0 box-border max-w-[calc(100%_-_289px)] lg:pt-[34px] lg:box-border mq750:pt-[22px] mq750:box-border mq750:max-w-full">
           <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[13px] box-border gap-[39px] max-w-full mq750:gap-[19px]">
             <div className="self-stretch flex flex-row items-start justify-between max-w-full gap-[20px] mq1050:flex-wrap">
               <div className="w-[576px] flex flex-col items-start justify-start gap-[22px] min-w-[576px] max-w-full mq750:min-w-full mq1050:flex-1">
@@ -268,11 +267,17 @@ const FreelancersList: FunctionComponent = () => {
               </Select>
             </div>
           </div>
-          <FreelancerToChose />
-          <div className="self-stretch h-0.5 relative box-border opacity-[0.21] border-t-[1px] border-solid border-grey1" />
 
-          <FreelancerToChose />
-          <div className="self-stretch h-0.5 relative box-border opacity-[0.21] border-t-[1px] border-solid border-grey1" />
+          {freelancers.map((user, index) => (
+            <div>
+              <FreelancerToChose
+                id={user.id}
+                nickname={user.nickName}
+                filteredUsersDomainSkills={filteredUsersDomainSkills}
+              />
+              <div className="self-stretch h-0.5 relative box-border opacity-[0.21] border-t-[1px] border-solid border-grey1" />
+            </div>
+          ))}
         </section>
       </main>
     </div>

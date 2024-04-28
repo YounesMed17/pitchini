@@ -13,6 +13,7 @@ import Dashboard2 from "./testComp";
 import Slider from "./Slider";
 import RecruiterDashboard from "./RecruiterDashboard";
 import FreelancersList from "./FreelancersList";
+import Portfolio from "./Portfolio";
 function App() {
   return (
     <>
@@ -28,6 +29,7 @@ function App() {
           <Route path="dashboard2" element={<Dashboard2 />} />
           <Route path="Recruiterdashboard" element={<RecruiterDashboard />} />
           <Route path="FreelancersList" element={<FreelancersList />} />
+          <Route path="FreelancerPortfolio" element={<Portfolio />} />
 
           <Route path="slide" element={<Slider />} />
         </Routes>
