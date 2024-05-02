@@ -22,7 +22,7 @@ function SecondHeader(props: {
             </div>
             <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
               <img
-                className="w-[645px] relative max-h-full object-cover max-w-full"
+                className="w-[545px] relative max-h-full object-cover max-w-full"
                 loading="lazy"
                 alt=""
                 src={path}

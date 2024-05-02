@@ -5,7 +5,17 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Button, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 import TimeLine from "./components/TimeLine";
 import FormInput from "./components/FormInput";
 import {
@@ -23,6 +33,9 @@ const JointFreelancerP: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState("");
   const [last_name, setlast_name] = useState("");
   const [email, setEmail] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [bio, setBio] = useState("");
+  const [description, setDescription] = useState("");
   const [nickname, setNickName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -32,6 +45,8 @@ const JointFreelancerP: FunctionComponent = () => {
   const [domainAndSkills, setDomainAndSkills] = useState<any[]>([]); // Define domainAndSkills state
   const [skills, setSkills] = useState<string[]>([]); // Initialize skills state as an array
   const [domain, setDomain] = useState<string[]>([]); // Initialize skills state as an array
+  const [onlyDomains, setOnlyDomains] = useState<string[]>([]); // Initialize skills state as an array
+
   const [filteredDomainAndSkills, setFilteredDomainAndSkills] = useState<any[]>(
     []
   ); // Define domainAndSkills state
@@ -76,6 +91,7 @@ const JointFreelancerP: FunctionComponent = () => {
       state: { first_name, last_name },
     });
   }, [navigate, first_name, last_name]);
+
   let first = true;
   let last = true;
   let Email = true;
@@ -83,7 +99,10 @@ const JointFreelancerP: FunctionComponent = () => {
   let Skills = true;
   let Password = true;
   let ConfirPassword = true;
-  let nickName = true;
+  let NickName = true;
+  let Bio = true;
+  let JobTitle = true;
+  let Description = true;
 
   useEffect(() => {
     async function fetchData() {
@@ -96,17 +115,27 @@ const JointFreelancerP: FunctionComponent = () => {
       }));
 
       setDomainAndSkills(domainAndSkillsData);
+
+      const uniqueDomains = [
+        ...new Set(domainAndSkillsData.map((item) => item.domaine)),
+      ];
+
+      // Create a new state with unique domains
+      setOnlyDomains(uniqueDomains.map((item) => ({ domaine: item })));
     }
 
     fetchData();
   }, []);
 
   if (!isNextClicked) {
+    Bio = false;
+    JobTitle = false;
+    Description = false;
     last = false;
     Email = false;
     Skills = false;
     ConfirPassword = false;
-    nickName = false;
+    NickName = false;
   }
   if (isNextClicked) {
     if (step == "01") {
@@ -117,14 +146,23 @@ const JointFreelancerP: FunctionComponent = () => {
       if (!validateNotEmpty(last_name)) {
         last = true;
       } else last = false;
+      if (!validateNotEmpty(bio)) {
+        Bio = true;
+      } else Bio = false;
+      if (!validateNotEmpty(jobTitle)) {
+        JobTitle = true;
+      } else JobTitle = false;
+      if (!validateNotEmpty(description)) {
+        Description = true;
+      } else Description = false;
 
       if (
         !validateNotEmpty(nickname) ||
         nickname.includes(last_name) ||
         nickname.includes(first_name)
       ) {
-        nickName = true;
-      } else nickName = false;
+        NickName = true;
+      } else NickName = false;
 
       if (!validateEmail(email)) {
         Email = true;
@@ -146,7 +184,15 @@ const JointFreelancerP: FunctionComponent = () => {
   }
   async function validation2() {
     if (step == "01") {
-      if (!last && !first && !Email && !nickName) {
+      if (
+        !last &&
+        !first &&
+        !Email &&
+        !NickName &&
+        !JobTitle &&
+        !Description &&
+        !Bio
+      ) {
         setstep("02");
         setIsNextClicked(false);
       }
@@ -166,50 +212,43 @@ const JointFreelancerP: FunctionComponent = () => {
         nickname,
         role: "freelancer",
         password,
+        bio,
+        description,
+        jobTitle,
       };
       // Send POST request to backend
-      const res = send(
+      const res = await send(
         false,
         formData,
         navigating,
         "http://localhost:3001/api/user/inscriptionUser"
       );
       const userId = await res;
-      /*
-      for (let j = 0; j < skills.length; j++) {
-        for (let i = 0; i < filteredDomainAndSkills.length; i++) {
-          if (skills[j] == filteredDomainAndSkills[i].skills) {
-            let skillsData = {
-              userId: userId,
-              domaine: filteredDomainAndSkills[i].domaine,
-              skillName: filteredDomainAndSkills[i].skills,
-            };
 
-            //console.log(skillsData);
-            send(
-              false,
-              skillsData,
-              navigating,
-              "http://localhost:3001/api/userskills"
-            );
-          }
-        }
-      }*/
-      const fileFormData = {
-        link: "dz",
-        type: "cv/portfolio",
-        userId,
-        file: selectedFiles[selectedFiles.length - 1],
-      };
-      console.log(fileFormData);
-      send(false, fileFormData, navigating, "http://localhost:3001/api/file");
+      for (let i = 0; i < selectedFiles.length; i++) {
+        /*
+        const fileFormData = {
+          link: "imagesServerURL",
+          type: "cv/portfolio",
+          userId,
+          file: selectedFiles[i],
+        };
+        console.log(fileFormData);
+        send(false, fileFormData, navigating, "http://localhost:3001/api/file");*/
+      }
     }
   }
-
+  const [type, setType] = useState("");
+  console.log(selectedFiles[0]);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      setSelectedFiles([...selectedFiles, ...Array.from(files)]);
+    const file = event.target.files;
+    const updatedFile = {
+      file,
+      type: type, // Access the file type using file.type
+    };
+
+    if (file) {
+      setSelectedFiles([...selectedFiles, updatedFile]);
       // Upload the files or perform any other actions
     }
   };
@@ -220,17 +259,21 @@ const JointFreelancerP: FunctionComponent = () => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const droppedFiles = event.dataTransfer.files;
-    if (droppedFiles) {
-      setSelectedFiles([...selectedFiles, ...Array.from(droppedFiles)]);
-      // Upload the dropped files or perform any other actions
+    const file = event.target.files;
+    const updatedFile = {
+      file,
+      type: type, // Access the file type using file.type
+    };
+
+    if (file) {
+      setSelectedFiles([...selectedFiles, updatedFile]);
+      // Upload the files or perform any other actions
     }
   };
   const showenInput =
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full ";
   const hiddenInput =
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full hidden ";
-
   return (
     <div className="w-full relative bg-white overflow-hidden flex flex-col items-start justify-start pt-0 px-0 pb-[57px] box-border gap-[81.40000000000146px] tracking-[normal] mq1000:gap-[41px_81.4px] mq450:gap-[20px_81.4px]">
       <EnTete></EnTete>
@@ -242,7 +285,7 @@ const JointFreelancerP: FunctionComponent = () => {
             title2="Are you using pitchini as a recruter or a freelancer"
             showButtons={true}
           />
-          <div className="self-stretch flex flex-row items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
+          <div className="self-stretch flex flex-row items-center md:items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
             <div className={step == "01" ? showenInput : hiddenInput}>
               <FormInput
                 placeHolder="First Name"
@@ -278,7 +321,7 @@ const JointFreelancerP: FunctionComponent = () => {
                     ? "NickName is required"
                     : "you can't include first name or last in nickName "
                 }
-                errorStatus={nickName}
+                errorStatus={NickName}
               />
 
               <FormInput
@@ -292,6 +335,39 @@ const JointFreelancerP: FunctionComponent = () => {
                   email == "" ? "email is required" : "email form is wrong"
                 }
                 errorStatus={Email}
+              />
+
+              <FormInput
+                placeHolder="JobTitle"
+                type="text"
+                value={jobTitle}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setJobTitle(e.target.value)
+                }
+                message={jobTitle == "" ? "jobTitle is required" : ""}
+                errorStatus={JobTitle}
+              />
+
+              <FormInput
+                placeHolder="Bio"
+                type="text"
+                value={bio}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setBio(e.target.value)
+                }
+                message={bio == "" ? "bio is required" : ""}
+                errorStatus={Bio}
+              />
+
+              <FormInput
+                placeHolder="Description"
+                type="text"
+                value={description}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setDescription(e.target.value)
+                }
+                message={description == "" ? "description is required" : ""}
+                errorStatus={Description}
               />
             </div>
 
@@ -312,19 +388,17 @@ const JointFreelancerP: FunctionComponent = () => {
                   </div>
                 )}
               >
-                {domainAndSkills.map((val, index) => (
+                {onlyDomains.map((val, index) => (
                   <MenuItem key={index} value={val.domaine}>
                     {val.domaine}
                   </MenuItem>
                 ))}
               </Select>
-
               <div className={!Domain || !isNextClicked ? "hidden" : ""}>
                 <p className="mt-[-18px] text-red-500 text-[21px]">
                   you need to select 1 domain at least
                 </p>
               </div>
-
               <Select
                 className="w-[50%]"
                 labelId="select-label"
@@ -352,15 +426,38 @@ const JointFreelancerP: FunctionComponent = () => {
                   you need to select 1 skill at least
                 </p>
               </div>
-
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  File type : (You can add multiple files , before you add one
+                  select his type)
+                </FormLabel>
+                <RadioGroup
+                  aria-label="options"
+                  name="options"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <FormControlLabel value="CV" control={<Radio />} label="cv" />
+                  <FormControlLabel
+                    value="Portfolio"
+                    control={<Radio />}
+                    label="portfolio"
+                  />
+                  <FormControlLabel
+                    value="Certificat"
+                    control={<Radio />}
+                    label="certificat"
+                  />
+                </RadioGroup>
+              </FormControl>
               <div
-                className="self-stretch rounded-sm bg-silver-200 box-border flex flex-col items-center justify-start py-[30px] px-5 gap-[12px] max-w-full border-[2px] border-solid border-blue-1"
+                className="self-stretch md:w-[650px] w-[300px] rounded-sm bg-silver-200 box-border flex flex-col items-center justify-start py-[30px] px-5 gap-[12px] border-[2px] border-solid border-blue-1"
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
               >
                 <label htmlFor="fileInput">
                   <img
-                    className="h-[104px] w-[152px] pr-[240px] pl-[240px] relative object-cover cursor-pointer "
+                    className="h-[74px] w-[92px] pr-[190px] pl-[190px] md:h-[104px] md:w-[152px] md:pr-[240px] md:pl-[240px] relative object-cover cursor-pointer "
                     loading="lazy"
                     alt="Upload file"
                     src="/icon0101-1@2x.png"
@@ -372,9 +469,19 @@ const JointFreelancerP: FunctionComponent = () => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <h2 className="m-0 w-[601px] relative text-inherit font-medium font-inherit inline-block max-w-full mq1050:text-7xl mq450:text-lgi flex justify-center items-center">
-                  <p className="m-0">Drag and drop file here or choose file</p>
-                </h2>
+                <div className="m-0 md:w-[501px] w-[250px] relative text-inherit font-medium font-inherit inline-block max-w-full text-sm md:text-lg flex justify-center items-center">
+                  <div className="flex flex-col">
+                    {selectedFiles.length != 0 ? (
+                      selectedFiles.map((item) => (
+                        <p className="m-0">{item.file[0].name} </p>
+                      ))
+                    ) : (
+                      <p className="m-0">
+                        Drag and drop file here or choose file
+                      </p>
+                    )}{" "}
+                  </div>
+                </div>
                 <div
                   className={
                     selectedFiles.length > 0 || !isNextClicked

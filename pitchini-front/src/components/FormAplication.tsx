@@ -19,18 +19,35 @@ const EnTete: FunctionComponent = () => {
     });
   }, [navigate]);
   async function apply() {
+    const freelancerId = 1;
     const ligneId = await send(
       false,
-      { userId, projectId, description, deadline: selectedDate },
+      { userId: freelancerId, projectId, description, deadline: selectedDate },
       navigating,
       "http://localhost:3001/api/projectApplicants/"
     );
     if (ligneId != null) {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const fileFormData = {
+          link: "imagesServerURL",
+          type: "cv/portfolio",
+          userId: ligneId, // application id
+          file: selectedFiles[i],
+        };
+        console.log(fileFormData);
+        send(false, fileFormData, navigating, "http://localhost:3001/api/file");
+      }
+
       const ligneId2 = await send(
         false,
-        { message: "A freelancer applied for your job", userId },
+        {
+          message: "A freelancer applied for your job",
+          type: "Project update",
+          userId, //client who posted the project
+          freelancerId: 1, // freelancer who applied for the project
+        },
         navigating,
-        "http://localhost:3001/api/notification /"
+        "http://localhost:3001/api/notification/"
       );
     }
   }
@@ -63,6 +80,7 @@ const EnTete: FunctionComponent = () => {
       // Upload the dropped files or perform any other actions
     }
   };
+
   return (
     <div className="max-w-md mx-auto bg-white px-8 pt-6 pb-8 mb-4">
       <h4>explain how you will be perfect for the job</h4>

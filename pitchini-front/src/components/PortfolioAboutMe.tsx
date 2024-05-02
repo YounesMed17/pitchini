@@ -1,6 +1,14 @@
 import { FunctionComponent } from "react";
 
-const PortfolioAboutMe: FunctionComponent = () => {
+interface PortfolioAboutMeProps {
+  bio: string;
+  description: string;
+}
+
+const PortfolioAboutMe: FunctionComponent<PortfolioAboutMeProps> = ({
+  bio,
+  description,
+}) => {
   return (
     <div className="w-full mt-[60px] mb-[50px] flex flex-col items-center justify-center gap-[82px] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey mq1050:gap-[41px] mq750:gap-[20px]">
       <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
@@ -17,7 +25,9 @@ const PortfolioAboutMe: FunctionComponent = () => {
               </h1>
             </div>
           </div>
-          <div className="self-stretch relative text-sm leading-[22px] text-grey2">{`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi commodo orci odio, ut bus sed. `}</div>
+          <div className="self-stretch relative text-sm leading-[22px] text-grey2">
+            {bio}
+          </div>
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-center items-center">
@@ -28,19 +38,8 @@ const PortfolioAboutMe: FunctionComponent = () => {
             src="/avatargirl.webp"
           />
         </div>
-        <div className="md:w-[800px] w-[350px] text-lg-2 leading-[146%] text-darkgray-1100 text-justify">
-          <p className="m-0">
-            Le lorem ipsum est, en imprimerie, une suite de mots sans
-            signification utilisée à titre provisoire pour calibrer une mise en
-            page, le texte définitif venant remplacer le faux-texte dès qu'il
-            est prêt ou que la mise en page est achevée.
-          </p>
-          <p className="m-0">&nbsp;</p>
-          <p className="m-0">
-            Le lorem ipsum est, en imprimerie, une suite de mots sans
-            signification utilisée à titre provisoire pour calibrer une mise en
-            page 
-          </p>
+        <div className="md:w-[800px] ml-[60px] w-[350px] text-lg-2 leading-[146%] text-darkgray-1100 text-justify">
+          <p className="">{description}</p>
         </div>
       </div>
     </div>

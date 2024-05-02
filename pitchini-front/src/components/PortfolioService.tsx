@@ -1,6 +1,11 @@
 import { FunctionComponent } from "react";
+interface portfolioServicesProps {
+  domains: { domain: string }[];
+}
 
-const PortfolioServices: FunctionComponent = () => {
+const PortfolioServices: FunctionComponent<portfolioServicesProps> = ({
+  domains,
+}) => {
   return (
     <div className=" mb-[70px] flex flex-col items-center justify-start gap-[55px] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey mq750:gap-[27px]">
       <div className="w-[835px] flex flex-col items-center justify-start max-w-full mq450:gap-[15px] mq1050:gap-[31px]">
@@ -17,45 +22,24 @@ const PortfolioServices: FunctionComponent = () => {
         </div>
       </div>
       <div className="self-stretch  py-0 pr-[0.1px] pl-0 gap-[23px] text-lgi text-orange flex justify-center items-center flex-col md:flex-row  ">
-        <div className=" rounded-9xl bg-white overflow-hidden flex flex-col items-center justify-center pt-[18px] px-[23px] pb-[25px] box-border">
-          <div className="self-stretch flex-1 flex flex-col items-center justify-center gap-[6px]">
-            <img
-              className="self-stretch flex-1 w-[140px]  max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/icon04-1@2x.png"
-            />
-            <div className="w-[170px] h-7  leading-[105%] uppercase font-medium inline-block shrink-0">
-              web design
+        {domains.map((item, index) => (
+          <div
+            key={index}
+            className=" rounded-9xl bg-white overflow-hidden flex flex-col items-center justify-center pt-[18px] px-[23px] pb-[25px] box-border"
+          >
+            <div className="self-stretch flex-1 flex flex-col items-center justify-center gap-[6px]">
+              <img
+                className="self-stretch flex-1 w-[140px]  max-w-full overflow-hidden max-h-full object-cover"
+                loading="lazy"
+                alt=""
+                src="/icon04-1@2x.png"
+              />
+              <div className="w-[170px] h-7  leading-[105%] uppercase font-medium inline-block shrink-0">
+                {item.domain}
+              </div>
             </div>
           </div>
-        </div>
-        <div className=" rounded-9xl bg-white overflow-hidden flex flex-col items-center justify-center pt-[18px] px-[23px] pb-[25px] box-border">
-          <div className="self-stretch flex-1 flex flex-col items-center justify-center gap-[6px]">
-            <img
-              className="self-stretch flex-1 w-[140px]  max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/icon04-1@2x.png"
-            />
-            <div className="w-[170px] h-7  leading-[105%] uppercase font-medium inline-block shrink-0">
-              web design
-            </div>
-          </div>
-        </div>{" "}
-        <div className=" rounded-9xl bg-white overflow-hidden flex flex-col items-center justify-center pt-[18px] px-[23px] pb-[25px] box-border">
-          <div className="self-stretch flex-1 flex flex-col items-center justify-center gap-[6px]">
-            <img
-              className="self-stretch flex-1 w-[140px]  max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/icon04-1@2x.png"
-            />
-            <div className="w-[170px] h-7  leading-[105%] uppercase font-medium inline-block shrink-0">
-              web design
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

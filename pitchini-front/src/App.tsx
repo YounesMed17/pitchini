@@ -14,6 +14,8 @@ import Slider from "./Slider";
 import RecruiterDashboard from "./RecruiterDashboard";
 import FreelancersList from "./FreelancersList";
 import Portfolio from "./Portfolio";
+import ImageViewer from "./components/PopUpSubmitJob";
+import FileUploader from "./components/upload";
 function App() {
   return (
     <>
@@ -29,8 +31,9 @@ function App() {
           <Route path="dashboard2" element={<Dashboard2 />} />
           <Route path="Recruiterdashboard" element={<RecruiterDashboard />} />
           <Route path="FreelancersList" element={<FreelancersList />} />
-          <Route path="FreelancerPortfolio" element={<Portfolio />} />
-
+          <Route path="FreelancerPortfolio/:userId" element={<Portfolio />} />
+          <Route path="img" element={<ImageViewer />} />
+          <Route path="up" element={<FileUploader />} />
           <Route path="slide" element={<Slider />} />
         </Routes>
       </BrowserRouter>

@@ -1,7 +1,13 @@
 import { FunctionComponent } from "react";
 import ProgressBar from "./ProgressBar";
 
-const PortfolioSkills: FunctionComponent = () => {
+interface portfolioSkillsProps {
+  skills: { skill: string }[];
+}
+
+const PortfolioSkills: FunctionComponent<portfolioSkillsProps> = ({
+  skills,
+}) => {
   return (
     <div className="mb-[70px] flex flex-col items-start justify-start gap-[89px] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey lg:gap-[44px] mq750:gap-[22px]">
       <div className="self-stretch flex flex-col items-start justify-start gap-[43px] max-w-full mq750:gap-[21px]">
@@ -24,10 +30,9 @@ const PortfolioSkills: FunctionComponent = () => {
           </div>
           <div className="container flex justify-center items-center mx-auto py-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ProgressBar value={74} label="HTML" />
-              <ProgressBar value={45} label="JavaScript" />
-              <ProgressBar value={92} label="React Js" />
-              <ProgressBar value={32} label="Vue Js" />
+              {skills.map((item, index) => (
+                <ProgressBar key={index} value={74} label={item.skill} />
+              ))}
             </div>
           </div>
         </div>
