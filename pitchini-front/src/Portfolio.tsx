@@ -24,9 +24,6 @@ interface DomainData {
 interface SkillData {
   skill: string;
 }
-interface RouteParams {
-  userId: number;
-}
 
 const Portfolio: FunctionComponent = () => {
   const [user, setUser] = useState<UserData | null>(null); // Initialize as null or empty object
@@ -101,7 +98,7 @@ const Portfolio: FunctionComponent = () => {
         ></PortfolioAboutMe>
         <PortfolioServices domains={domains}></PortfolioServices>
         <PortfolioSkills skills={skills}></PortfolioSkills>
-        <PortfolioTestimonials></PortfolioTestimonials>
+        <PortfolioTestimonials userId={userId}></PortfolioTestimonials>
       </div>
       {/* footer to put here  */}
     </div>

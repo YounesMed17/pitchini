@@ -3,7 +3,10 @@ import { Button, Dialog, Slide } from "@mui/material";
 import CreateTask from "./CreateTask";
 import { get } from "../utilFunctions/getData";
 import { set } from "date-fns";
-
+import DoneIcon from "@mui/icons-material/Done";
+import CloseIcon from "@mui/icons-material/Close";
+import { modifyData } from "../utilFunctions/modifyData";
+import { send } from "../utilFunctions/sendData";
 const Transition = Slide;
 
 const ColumnDirection3 = ({
@@ -13,29 +16,38 @@ const ColumnDirection3 = ({
   totalPrice,
   projectId,
   status,
-  onNewTask,
   userRole,
 }) => {
   const [openD, setOpenD] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState(0);
 
+  async function fetchData() {
+    const res = await get(
+      `http://localhost:3001/api/toDoList/allProjectTasks/${projectId}`
+    );
+    const values = await res;
+
+    const tasks = values.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      projectId: item.projectId,
+      freelancerId: item.freelancerId,
+      isDone: item.isDone,
+    }));
+
+    setTasks(tasks);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await get(
-        `http://localhost:3001/api/toDoList/allProjectTasks/${id}`
-      );
-      const values = await res;
-
-      const tasks = values.map((item) => ({
-        title: item.title,
-        isDone: item.isDone,
-      }));
-
-      setTasks(tasks);
-    }
-
     fetchData();
+
+    // Set interval to fetch projects every 3 seconds
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -73,19 +85,69 @@ const ColumnDirection3 = ({
       onNewTask(newTask);
     }
   };
+  const [openL, setOpenL] = useState(false);
 
+  const handleClickOpenList = () => {
+    setOpenL(true);
+  };
+
+  const handleCloseList = () => {
+    setOpenL(false);
+  };
+  async function updateTaskStatus(
+    id: number,
+    title: string,
+    description: string,
+    freelancerId: number,
+    projectId: number,
+    TaskStatus: boolean
+  ) {
+    await modifyData(
+      {
+        title: title,
+        description: description,
+        isDone: TaskStatus,
+        projectId: projectId,
+        freelancerId: freelancerId,
+      },
+      `http://localhost:3001/api/toDoList/${id}`
+    );
+    // notif send
+    function navigating() {}
+    send(
+      false,
+      {
+        message: `A freelancer modified this task status : ${title}  ${
+          TaskStatus
+            ? "from in progress to is done"
+            : "from done to in progress"
+        } `,
+        type: "Project update",
+        userId: 24, //client who posted the project
+        freelancerId: 3, // freelancer who applied for the project
+      },
+      navigating,
+      "http://localhost:3001/api/notification/"
+    );
+  }
   return (
     <div className="mb-[25px] flex flex-col items-start justify-start relative gap-[10px] text-justify text-2xs text-white font-titre-grey">
       <div
         className={
-            status == "done" || userRole == "recruiter"
-              ? "hidden"
-            : "absolute top-[30px] right-[35px] z-[5]"
+          status == "done"
+            ? "hidden"
+            : "absolute top-[30px] right-[35px] z-[5] flex gap-[7px] "
         }
       >
-        <Button variant="outlined" onClick={handleClick}>
-          Create new task
+        <div className={userRole == "recruiter" ? "hidden" : ""}>
+          <Button variant="outlined" onClick={handleClick}>
+            Create new task
+          </Button>
+        </div>
+        <Button variant="outlined" onClick={handleClickOpenList}>
+          check tasks
         </Button>
+
         <Dialog
           open={openD}
           TransitionComponent={Transition}
@@ -94,6 +156,65 @@ const ColumnDirection3 = ({
           aria-describedby="alert-dialog-slide-description"
         >
           <CreateTask onTaskCreate={handleTaskCreate} projectId={projectId} />
+        </Dialog>
+        <Dialog
+          open={openL}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseList}
+          aria-describedby="alert-dialog-slide-description"
+          PaperProps={{
+            style: {
+              scrollbarWidth: "none", // Firefox
+              WebkitOverflowScrolling: "touch", // iOS momentum scrolling
+              "&::WebkitScrollbar": {
+                display: "none", // Hide scrollbar for Chrome, Safari, etc.
+              },
+            },
+          }}
+        >
+          <div className="p-[40px]  flex flex-col items-start justify-start gap-[10px]">
+            {/* zedt ka3bet 3al manther */}
+            {tasks.map((task) => (
+              <div className=" relative flex flex-row items-start justify-start z-[0]">
+                <div className="w-5  rounded-tl-[7.48px] rounded-tr-none rounded-br-none rounded-bl-[7.48px] bg-orange h-[50px]" />
+                <div className="sm:w-[431px] w-[281px]  shadow-[3px_3px_17.58px_rgba(0,_0,_0,_0.09)] bg-white h-[50px]" />
+
+                <div className="!m-[0] absolute top-[4px] left-[40px] flex flex-row items-center justify-start gap-[247px] z-[1]">
+                  <div className="sm:w-[107px] w-[57px] flex flex-col items-start justify-start">
+                    <div className="sm:w-[220px] w-[220px]  leading-[113%] font-semibold flex items-center h-[23px] shrink-0">
+                      {task.title}
+                    </div>
+                    <div className="sm:w-[215px] w-[210px]  text-2xs tracking-[-0.01em] leading-[145.45%] font-light text-gray-1600 text-justify flex items-center h-4 shrink-0">
+                      {task.description}{" "}
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute top-[30%] right-[5%]  flex justify-center items-center gap-[10px] ">
+                  <input
+                    className={userRole == "recruiter" ? "hidden" : ""}
+                    type="button"
+                    value={task.isDone ? "Mark As inProgress" : "Mark As Done"}
+                    onClick={() =>
+                      updateTaskStatus(
+                        task.id,
+                        task.title,
+                        task.description,
+                        task.freelancerId,
+                        task.projectId,
+                        !task.isDone
+                      )
+                    }
+                  />
+                  {task.isDone ? (
+                    <DoneIcon></DoneIcon>
+                  ) : (
+                    <CloseIcon></CloseIcon>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </Dialog>
       </div>
       <img

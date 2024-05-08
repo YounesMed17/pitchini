@@ -1,6 +1,28 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { get } from "../utilFunctions/getData";
+import { Rating, Typography } from "@mui/material";
 
-const PortfolioTestimonials: FunctionComponent = () => {
+const PortfolioTestimonials: FunctionComponent = ({ userId }) => {
+  const [rates, setRates] = useState();
+  useEffect(() => {
+    async function fetchData() {
+      const res = await get(
+        `http://localhost:3001/api/rate/allUserRates/${userId}`
+      );
+
+      const rate = res.map((item) => ({
+        rate: item.rate,
+        comment: item.comment,
+        fromUser: item.fromUser1,
+      }));
+
+      setRates(rate);
+    }
+
+    fetchData();
+  }, []);
+  console.log(rates);
+
   return (
     <div className="bg-[#f2f2f2] mb-[70px] w-full pt-[30px] pb-[140px] flex flex-col items-start justify-start gap-[89px] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey lg:gap-[44px] mq750:gap-[22px]">
       <div className="self-stretch relative flex flex-col items-start justify-start gap-[43px] max-w-full mq750:gap-[21px]">
@@ -18,8 +40,7 @@ const PortfolioTestimonials: FunctionComponent = () => {
             </div>
           </div>
           <div className="mt-[25px] self-stretch h-7  md:text-sm text-[14px] ml-[70px] mr-[70px] leading-[146%] text-grey2 inline-block shrink-0 mt-[-5.9px]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-            commodo orci odio, ut bus sed.
+            All other users rates
           </div>
         </div>
         <img
@@ -27,6 +48,18 @@ const PortfolioTestimonials: FunctionComponent = () => {
           alt=""
           src="/avatargirl.webp"
         />
+
+        <div className="ml-[80px] mr-[50px] flex flex-wrap gap-[70px] justify-start items-start ">
+          {rates.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col justify-center items-start"
+            >
+              <Typography component="legend">{item.comment}</Typography>
+              <Rating name="read-only" value={item.rate} readOnly />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -15,20 +15,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 ////////////////////////////////////////////
 import { get } from "./utilFunctions/getData";
 import { useEffect, useState } from "react";
 import ColumnDirection3 from "./components/ColumnDirection3";
-import NavBar from "./components/NavBar1";
 import Charts from "./components/Charts";
-import { Button, Dialog, Slide } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import DoneIcon from "@mui/icons-material/Done";
-import CloseIcon from "@mui/icons-material/Close";
-import { modifyData } from "./utilFunctions/modifyData";
+import SideBar from "./components/SideBar";
 
 const drawerWidth = 240;
 
@@ -263,135 +257,9 @@ export default function MiniDrawer() {
     setShowDone(false);
   }
 
-  // getting tasks
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const res = await get(`http://localhost:3001/api/toDoList/all/${3}`);
-      const values = await res;
-
-      const tasks = values.map((item) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        projectId: item.projectId,
-        freelancerId: item.freelancerId,
-        isDone: item.isDone,
-      }));
-
-      setTasks(tasks);
-    }
-
-    fetchData();
-  }, []);
-  console.log(tasks);
-  async function updateTaskStatus(
-    id: number,
-    title: string,
-    description: string,
-    freelancerId: number,
-    projectId: number,
-    TaskStatus: boolean
-  ) {
-    await modifyData(
-      {
-        title: title,
-        description: description,
-        isDone: TaskStatus,
-        projectId: projectId,
-        freelancerId: freelancerId,
-      },
-      `http://localhost:3001/api/toDoList/${id}`
-    );
-
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, isDone: TaskStatus } : task
-      )
-    );
-  }
-
-  const updateTasks = (newTask) => {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-  };
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={handleDrawer}
-        edge="start"
-        sx={{
-          marginRight: 5,
-
-          ...(open && { display: "none" }),
-        }}
-      ></IconButton>
-
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawer}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+      <SideBar></SideBar>
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3 }}
@@ -437,8 +305,7 @@ export default function MiniDrawer() {
                   totalPrice={project.totalPrice}
                   projectId={project.id}
                   status={project.status}
-                  onNewTask={updateTasks}
-                  userRole="recruiter"
+                  userRole="freelancer"
                 />
               ))}
             </div>
@@ -460,98 +327,9 @@ export default function MiniDrawer() {
                   totalPrice={project.totalPrice}
                   projectId={project.id}
                   status={project.status}
-                  onNewTask={updateTasks}
                   userRole="recruiter"
                 />
               ))}
-            </div>  
-          </div>
-          <div className="flex gap-[30px] justify-start items-center flex-col md:flex-row ">
-            <div className="mt-[80px] mb-[80px]">
-              <div className="mb-[20px] tracking-[-0.01em] leading-[145.45%] font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] ">
-                Tasks To Do
-              </div>
-
-              <div className=" flex flex-col items-start justify-start gap-[10px]">
-                {/* zedt ka3bet 3al manther */}
-                {tasks.map((task) => (
-                  <div className=" relative flex flex-row items-start justify-start z-[0]">
-                    <div className="w-5  rounded-tl-[7.48px] rounded-tr-none rounded-br-none rounded-bl-[7.48px] bg-orange h-[50px]" />
-                    <div className="sm:w-[431px] w-[281px]  shadow-[3px_3px_17.58px_rgba(0,_0,_0,_0.09)] bg-white h-[50px]" />
-
-                    <div className="!m-[0] absolute top-[4px] left-[40px] flex flex-row items-center justify-start gap-[247px] z-[1]">
-                      <div className="sm:w-[107px] w-[57px] flex flex-col items-start justify-start">
-                        <div className="sm:w-[220px] w-[220px]  leading-[113%] font-semibold flex items-center h-[23px] shrink-0">
-                          {task.title}
-                        </div>
-                        <div className="sm:w-[215px] w-[210px]  text-2xs tracking-[-0.01em] leading-[145.45%] font-light text-gray-1600 text-justify flex items-center h-4 shrink-0">
-                          {task.description}{" "}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute top-[30%] right-[5%]  flex justify-center items-center gap-[10px] ">
-                      <input
-                        type="button"
-                        value={
-                          task.isDone ? "Mark As inProgress" : "Mark As Done"
-                        }
-                        onClick={() =>
-                          updateTaskStatus(
-                            task.id,
-                            task.title,
-                            task.description,
-                            task.freelancerId,
-                            task.projectId,
-                            !task.isDone
-                          )
-                        }
-                      />
-                      {task.isDone ? (
-                        <DoneIcon></DoneIcon>
-                      ) : (
-                        <CloseIcon></CloseIcon>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col gap-[30px]">
-              <div className=" font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text]">
-                Domains
-              </div>
-              <div className="flex flex-col justify-start md:flex-row  items-center flex-wrap gap-[50px] text-lg text-orange">
-                <div className="shadow-[3px_3px_17.58px_rgba(0,_0,_0,_0.09)] rounded-[7.48px] bg-white overflow-hidden flex flex-col items-start justify-start py-[9px] px-[21px] border-[0.7px] border-solid border-dgrad-color">
-                  <div className="flex flex-row items-center justify-start gap-[40px]">
-                    <img
-                      className="w-[42px]  h-[39px] object-cover"
-                      alt=""
-                      src="/icon04-1@2x.png"
-                    />
-                    <div className="w-[107.9px]  leading-[105%] uppercase  font-medium text-sm flex justify-center items-center h-[17.2px] shrink-0">
-                      {domaine1}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={
-                    domaine2 == ""
-                      ? "hidden"
-                      : "shadow-[3px_3px_17.58px_rgba(0,_0,_0,_0.09)] rounded-[7.48px] bg-white overflow-hidden flex flex-col items-start justify-start  py-[9px] px-[21px] border-[0.7px] border-solid border-dgrad-color"
-                  }
-                >
-                  <div className="flex flex-row items-center justify-start gap-[40px]">
-                    <img
-                      className="w-[42px]  h-[39px] object-cover"
-                      alt=""
-                      src="/icon04-1@2x.png"
-                    />
-                    <div className="w-[107.9px]  leading-[105%] uppercase  font-medium text-sm flex justify-center items-center h-[17.2px] shrink-0">
-                      {domaine2}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

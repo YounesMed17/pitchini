@@ -34,7 +34,7 @@ export default function PopUpButton() {
       <Nav></Nav>
       <React.Fragment>
         <div className="mt-[200px]">
-          {" "}
+          
           <Button variant="outlined" onClick={handleClickOpen}>
             slide in alert dialog
           </Button>

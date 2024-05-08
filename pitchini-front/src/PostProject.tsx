@@ -300,8 +300,8 @@ const PostProject: FunctionComponent = () => {
                 </Select>
 
                 <TableContainer
-                  component={Paper}
                   className={services.length == 0 && "hidden"}
+                  component={Paper}
                 >
                   <Table>
                     <TableHead>

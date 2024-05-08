@@ -10,6 +10,7 @@ export default function CreateTask({ onTaskCreate, projectId }) {
   const navigating = () => {};
 
   async function apply() {
+    console.log(projectId, "projectid");
     setIsApplyClicked(true);
     if (taskTitle && taskDescription) {
       const taskId = await send(
