@@ -91,7 +91,10 @@ const Portfolio: FunctionComponent = () => {
           nickname={user?.nickname}
           jobTitle={user?.jobTitle}
         ></PortfolioHeader>
-        <PortfolioStatistics projectCount={projectsCount}></PortfolioStatistics>
+        <PortfolioStatistics
+          projectCount={projectsCount}
+          userId={userId}
+        ></PortfolioStatistics>
         <PortfolioAboutMe
           bio={user?.bio}
           description={user?.description}

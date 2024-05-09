@@ -1,6 +1,20 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { get } from "../utilFunctions/getData";
+import { Rating } from "@mui/material";
 
-const PortfolioStatistics: FunctionComponent = ({ projectCount }) => {
+const PortfolioStatistics: FunctionComponent = ({ projectCount, userId }) => {
+  const [avgRate, setAvgRate] = useState(0);
+  useEffect(() => {
+    async function fetchData() {
+      let res = await get(`http://localhost:3001/api/rate/avg/${userId}`);
+      res = res - 0.5;
+      setAvgRate(Math.round(res * 2) / 2);
+    }
+
+    fetchData();
+  }, []);
+  console.log(avgRate);
+
   return (
     <div className="flex justify-center items-center ">
       <div className="rounded-[10px]  self-stretch bg-[#000] z-[5] flex items-center justify-center py-0 pr-5 pl-[21px] box-border w-fit  mt-[-40px] text-center text-4xl-3 text-white font-titre-grey">
@@ -18,7 +32,12 @@ const PortfolioStatistics: FunctionComponent = ({ projectCount }) => {
           <div className="bg-[#000] flex flex-col items-center justify-center gap-[4px]">
             <div className="self-stretch flex flex-row items-center justify-center py-0 pr-7 pl-[27.7px]">
               <div className=" flex-1 relative leading-[35px] uppercase font-semibold z-[3] mq450:text-lgi mq450:leading-[27px]">
-                ⭐⭐⭐
+                <Rating
+                  name="half-rating-read"
+                  value={avgRate}
+                  precision={0.5}
+                  readOnly
+                />
               </div>
             </div>
             <div className="self-stretch relative text-smi-4 leading-[20.8px] uppercase font-light z-[3]">
