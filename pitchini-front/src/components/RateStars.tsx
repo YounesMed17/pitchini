@@ -48,8 +48,8 @@ const HoverRating: React.FC<HoverRatingProps> = ({ onChange }) => {
         value={value}
         precision={0.5}
         getLabelText={getLabelText}
-        onChange={(event, newValue) => handleValueChange(newValue)}
-        onChangeActive={(event, newHover) => {
+        onChange={(newValue) => handleValueChange(newValue)}
+        onChangeActive={(newHover) => {
           setHover(newHover);
         }}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}

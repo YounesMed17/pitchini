@@ -17,6 +17,8 @@ import Portfolio from "./Portfolio";
 import ImageViewer from "./components/PopUpSubmitJob";
 import FileUploader from "./components/upload";
 import Rate from "./components/RatingPopup";
+import SuccessfulPayment from "./components/SuccessfulPayment";
+import FailedPayment from "./components/FailedPayment";
 function App() {
   return (
     <>
@@ -37,6 +39,8 @@ function App() {
           <Route path="up" element={<FileUploader />} />
           <Route path="slide" element={<Slider />} />
           <Route path="rate" element={<Rate />} />
+          <Route path="successfulPayment" element={<SuccessfulPayment />} />
+          <Route path="failedPayment" element={<FailedPayment />} />
         </Routes>
       </BrowserRouter>
     </>

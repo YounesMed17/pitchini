@@ -28,6 +28,7 @@ import EnTete from "./components/EnTete";
 import { send } from "./utilFunctions/sendData";
 import { get } from "./utilFunctions/getData";
 import SignUpSecondHeader from "./components/SecondHeader";
+import ChooseAvatar from "./components/ChooseAvatar";
 
 const JointFreelancerP: FunctionComponent = () => {
   const [first_name, setfirst_name] = useState("");
@@ -274,6 +275,13 @@ const JointFreelancerP: FunctionComponent = () => {
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full ";
   const hiddenInput =
     "flex-1 flex flex-col items-start justify-start gap-[21px] max-w-full hidden ";
+
+  ////////////
+  const handleAvatarChange = (selectedAvatar) => {
+    // Handle selectedAvatar data here (e.g., send to server, update state)
+    console.log("Selected Avatar:", selectedAvatar);
+  };
+
   return (
     <div className="w-full relative bg-white overflow-hidden flex flex-col items-start justify-start pt-0 px-0 pb-[57px] box-border gap-[81.40000000000146px] tracking-[normal] mq1000:gap-[41px_81.4px] mq450:gap-[20px_81.4px]">
       <EnTete></EnTete>
@@ -287,6 +295,7 @@ const JointFreelancerP: FunctionComponent = () => {
           />
           <div className="self-stretch flex flex-row items-center md:items-start justify-start pt-0 pb-1.5 pr-[41px] pl-[46px] box-border max-w-full text-13xl text-blue-1 mq1050:pl-[23px] mq1050:box-border">
             <div className={step == "01" ? showenInput : hiddenInput}>
+              <ChooseAvatar onChange={handleAvatarChange}></ChooseAvatar>
               <FormInput
                 placeHolder="First Name"
                 type="text"

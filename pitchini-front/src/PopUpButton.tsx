@@ -34,7 +34,6 @@ export default function PopUpButton() {
       <Nav></Nav>
       <React.Fragment>
         <div className="mt-[200px]">
-          
           <Button variant="outlined" onClick={handleClickOpen}>
             slide in alert dialog
           </Button>
@@ -59,6 +58,15 @@ export default function PopUpButton() {
           <DialogActions></DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <Button
+        variant="outlined"
+        sx={{ marginTop: "100px", marginLeft: "200px" }}
+      >
+        <a href="https://api.preprod.konnect.network/lWb5LqI6u">
+          Passer au payement
+        </a>
+      </Button>
     </>
   );
 }

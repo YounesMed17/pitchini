@@ -2,25 +2,40 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { get } from "../utilFunctions/getData";
 import { Rating, Typography } from "@mui/material";
 
-const PortfolioTestimonials: FunctionComponent = ({ userId }) => {
-  const [rates, setRates] = useState();
+interface PortfolioTestimonialsProps {
+  userId: string; // Assuming userId is a string, adjust the type accordingly
+}
+
+const PortfolioTestimonials: FunctionComponent<PortfolioTestimonialsProps> = ({
+  userId,
+}) => {
+  const [rates, setRates] = useState<
+    { rate: number; comment: string; fromUser: number }[]
+  >([]); // Specify type for useState
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await get(
-        `http://localhost:3001/api/rate/allUserRates/${userId}`
-      );
+    const fetchData = async () => {
+      try {
+        const res = await get(
+          `http://localhost:3001/api/rate/allUserRates/${userId}`
+        );
 
-      const rate = res.map((item) => ({
-        rate: item.rate,
-        comment: item.comment,
-        fromUser: item.fromUser1,
-      }));
+        const mappedRates = res.map((item: any) => ({
+          // Adjust type of 'item' to any if necessary
+          rate: item.rate,
+          comment: item.comment,
+          fromUser: item.fromUser1,
+        }));
 
-      setRates(rate);
-    }
+        setRates(mappedRates);
+      } catch (error) {
+        console.error("Error fetching rates:", error);
+      }
+    };
 
     fetchData();
-  }, []);
+  }, [userId]); // Include 'userId' in the dependency array
+
   console.log(rates);
 
   return (
@@ -30,21 +45,21 @@ const PortfolioTestimonials: FunctionComponent = ({ userId }) => {
           <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
             <div className="flex flex-col items-start justify-start max-w-full">
               <div className="self-stretch flex flex-row items-start justify-center py-0 px-5">
-                <div className="  leading-[22px] uppercase font-medium inline-block shrink-0">
+                <div className="leading-[22px] uppercase font-medium inline-block shrink-0">
                   TESTIMONIALS
                 </div>
               </div>
-              <h1 className="m-0 self-stretch relative md:text-21xl text-[20px] font-semibold font-inherit text-orange [text-shadow:1px_0_0_rgba(0,_0,_0,_0),_0_1px_0_rgba(0,_0,_0,_0),_-1px_0_0_rgba(0,_0,_0,_0),_0_-1px_0_rgba(0,_0,_0,_0)] z-[1] mt-[-2px] ">
+              <h1 className="m-0 self-stretch relative md:text-21xl text-[20px] font-semibold font-inherit text-orange mt-[-2px]">
                 What People Say About Me
               </h1>
             </div>
           </div>
-          <div className="mt-[25px] self-stretch h-7  md:text-sm text-[14px] ml-[70px] mr-[70px] leading-[146%] text-grey2 inline-block shrink-0 mt-[-5.9px]">
+          <div className="mt-[25px] self-stretch h-7 md:text-sm text-[14px] ml-[70px] mr-[70px] leading-[146%] text-grey2 inline-block shrink-0 mt-[-5.9px]">
             All other users rates
           </div>
         </div>
         <img
-          className=" md:w-[150px] w-[100px]  absolute md:left-[44.2%] left-[40%] md:top-[110%] top-[150%] z-[10]"
+          className="md:w-[150px] w-[100px] absolute md:left-[44.2%] left-[40%] md:top-[110%] top-[150%] z-[10]"
           alt=""
           src="/avatargirl.webp"
         />
