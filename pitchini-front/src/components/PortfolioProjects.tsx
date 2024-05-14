@@ -1,6 +1,31 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { Box, ImageList, ImageListItem } from "@mui/material";
+interface PortfolioProjectsProps {
+  userId: number;
+}
+const PortfolioProjects: FunctionComponent<PortfolioProjectsProps> = ({
+  userId,
+}) => {
+  const [pictures, setPictures] = useState<any[]>([]);
+  useEffect(() => {
+    // Fetch pictures when the component mounts
+    const fetchPictures = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/file/all");
+        if (response.ok) {
+          const data = await response.json();
+          setPictures(data); // Update state with fetched pictures
+        } else {
+          console.error("Failed to fetch pictures");
+        }
+      } catch (error) {
+        console.error("Error fetching pictures:", error);
+      }
+    };
 
-const PortfolioProjects: FunctionComponent = () => {
+    fetchPictures();
+  }, []); // Empty dependency array to run effect only once
+
   return (
     <div className="self-stretch flex flex-col items-start justify-start gap-[85px] shrink-0 [debug_commit:1de1738] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey lg:gap-[42px] mq750:gap-[21px]">
       <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
@@ -17,76 +42,29 @@ const PortfolioProjects: FunctionComponent = () => {
               </h1>
             </div>
           </div>
-          <div className="self-stretch relative text-sm leading-[21px] text-grey2 z-[1]">{`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi commodo orci odio, ut bus sed. `}</div>
         </div>
       </div>
       <div className="self-stretch flex flex-col items-start justify-start gap-[41px] max-w-full text-lg text-gray-100 mq750:gap-[20px]">
-        <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
-          <div className="w-[564px] relative leading-[27px] uppercase inline-block shrink-0 opacity-[0.53] max-w-full">
-            <span className="font-semibold">all</span>
-            <span className="font-medium text-grey2 whitespace-pre-wrap">
-              {" "}
-              webdesign app design seo
-            </span>
-          </div>
-        </div>
-        <div className="self-stretch grid flex-row items-start justify-start gap-[15px] grid-cols-[repeat(4,_minmax(207px,_1fr))] mq450:grid-cols-[minmax(207px,_1fr)] mq1050:justify-center mq1050:grid-cols-[repeat(2,_minmax(207px,_359px))]">
-          <div className="h-[918.1px] flex flex-col items-start justify-start gap-[14px]">
-            <img
-              className="self-stretch flex-1 relative max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-13@2x.png"
-            />
-            <img
-              className="self-stretch h-[418.6px] relative max-w-full overflow-hidden shrink-0 object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-22@2x.png"
-            />
-          </div>
-          <div className="h-[918.1px] flex flex-col items-start justify-start gap-[14px]">
-            <img
-              className="self-stretch h-[418.6px] relative max-w-full overflow-hidden shrink-0 object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-32@2x.png"
-            />
-            <img
-              className="self-stretch flex-1 relative max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-42@2x.png"
-            />
-          </div>
-          <div className="h-[918.1px] flex flex-col items-start justify-start gap-[14px]">
-            <img
-              className="self-stretch flex-1 relative max-w-full overflow-hidden max-h-full object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-51@2x.png"
-            />
-            <img
-              className="self-stretch h-[418.6px] relative max-w-full overflow-hidden shrink-0 object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-61@2x.png"
-            />
-          </div>
-          <div className="h-[918.1px] flex flex-col items-start justify-start gap-[14px]">
-            <img
-              className="self-stretch h-[418.6px] relative max-w-full overflow-hidden shrink-0 object-cover"
-              loading="lazy"
-              alt=""
-              src="/mask-group-71@2x.png"
-            />
-            <img
-              className="self-stretch flex-1 relative max-w-full overflow-hidden max-h-full object-contain"
-              loading="lazy"
-              alt=""
-              src="/mask-group-81@2x.png"
-            />
-          </div>
+        <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full"></div>
+        <div className="flex justify-center items-center">
+          <Box
+            sx={{
+              width: "80%",
+            }}
+          >
+            <ImageList variant="masonry" cols={3} gap={8}>
+              {pictures.map((item, index) => (
+                <ImageListItem key={index}>
+                  <img
+                    srcSet={`http://localhost:3001/uploads/${item.link}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    src={`http://localhost:3001/uploads/${item.link}?w=248&fit=crop&auto=format`}
+                    alt="portfolio img"
+                    loading="lazy"
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+          </Box>
         </div>
       </div>
     </div>

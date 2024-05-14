@@ -27,7 +27,7 @@ import { send } from "./utilFunctions/sendData";
 const PostProject: FunctionComponent = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [step, setstep] = useState("01");
+  const [step, setstep] = useState("02");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isNextClicked, setIsNextClicked] = useState(false);
   const [domain, setDomain] = useState<string[]>([]); // Initialize skills state as an array

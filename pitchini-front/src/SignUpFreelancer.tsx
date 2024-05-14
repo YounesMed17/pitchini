@@ -31,6 +31,8 @@ import SignUpSecondHeader from "./components/SecondHeader";
 import ChooseAvatar from "./components/ChooseAvatar";
 
 const JointFreelancerP: FunctionComponent = () => {
+  localStorage.setItem("userId", "5");
+
   const [first_name, setfirst_name] = useState("");
   const [last_name, setlast_name] = useState("");
   const [email, setEmail] = useState("");
@@ -40,7 +42,7 @@ const JointFreelancerP: FunctionComponent = () => {
   const [nickname, setNickName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [step, setstep] = useState("01");
+  const [step, setstep] = useState("03");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isNextClicked, setIsNextClicked] = useState(false);
   const [domainAndSkills, setDomainAndSkills] = useState<any[]>([]); // Define domainAndSkills state

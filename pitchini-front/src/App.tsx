@@ -19,7 +19,40 @@ import FileUploader from "./components/upload";
 import Rate from "./components/RatingPopup";
 import SuccessfulPayment from "./components/SuccessfulPayment";
 import FailedPayment from "./components/FailedPayment";
+import { useEffect, useState } from "react";
+import { get } from "./utilFunctions/getData";
+import UploadForm from "./UploadForm";
 function App() {
+  const [userStatus, setUserStatus] = useState({ status: "", role: "" });
+
+  const localStorageId = localStorage.getItem("userId");
+  const userId = parseInt(localStorageId, 10);
+  useEffect(() => {
+    async function fetchData() {
+      const res = await get(`http://localhost:3001/api/user/${userId}`);
+
+      setUserStatus({ status: res.status, role: res.role });
+    }
+
+    fetchData();
+  }, []);
+  function chekcUserStatus() {
+    return userStatus.status !== "suspended";
+  }
+
+  function Suspended() {
+    return (
+      <div className="flex flex-col mt-[10%] justify-center items-center">
+        <h1 className="text-orange text-center">
+          You are Suspended<br></br> You can't access anything on the plateforme
+        </h1>
+        <h2 className="text-[#4B5563] opacity-80">
+          If you think that we made a mistake please send us an email :
+          contact@pitchini.com
+        </h2>
+      </div>
+    );
+  }
   return (
     <>
       <BrowserRouter>
@@ -27,7 +60,10 @@ function App() {
           <Route path="/signuprecruter" element={<SignUp />} />
           <Route path="SignUpInterview" element={<SignUpInterview />} />
           <Route path="SignUpfreelancer" element={<SignUpFreelancer />} />
-          <Route path="postProject" element={<PostProject />} />
+          <Route
+            path="postProject/:userId"
+            element={chekcUserStatus() ? <PostProject /> : Suspended()}
+          />
           <Route path="Freelancerdashboard" element={<Dashboard />} />
           <Route path="popup" element={<PopUpButton />} />
           <Route path="form" element={<FormAplication />} />
@@ -41,6 +77,8 @@ function App() {
           <Route path="rate" element={<Rate />} />
           <Route path="successfulPayment" element={<SuccessfulPayment />} />
           <Route path="failedPayment" element={<FailedPayment />} />
+
+          <Route path="UploadForm" element={<UploadForm />} />
         </Routes>
       </BrowserRouter>
     </>
