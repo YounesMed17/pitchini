@@ -1,94 +1,32 @@
 import * as React from "react";
-import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-
-////////////////////////////////////////////
 import { get } from "./utilFunctions/getData";
 import { useEffect, useState } from "react";
 import ColumnDirection3 from "./components/ColumnDirection3";
 import Charts from "./components/Charts";
 import SideBar from "./components/SideBar";
 
-const drawerWidth = 240;
-
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  totalPrice: number;
+  status: "inProgress" | "done"; // Assuming status can only be one of these values
+  finishedDate: Date;
+}
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
 export default function MiniDrawer() {
-  const [projects, setProjects] = useState<any[]>([]);
-  const [inProgressProjects, setInProgressProjects] = useState<any[]>([]);
-  const [doneProjects, setDoneProjects] = useState<any[]>([]);
-  const [skills, setSkills] = useState<any[]>([]);
-  const [domaine1, setDomaine1] = useState("");
-  const [domaine2, setDomaine2] = useState("");
+  const [inProgressProjects, setInProgressProjects] = useState<Project[]>([]);
+  const [doneProjects, setDoneProjects] = useState<Project[]>([]);
 
   const getMonthName = (date: Date): string => {
     const months = [
@@ -107,18 +45,17 @@ export default function MiniDrawer() {
     ];
     return months[date.getMonth()];
   };
+
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
-  const month = [];
+  const month: string[] = [];
 
   for (let i = 0; i < 12; i++) {
     const date = new Date(currentYear, currentMonth - i, 1);
     const monthName = date.toLocaleString("en-US", { month: "long" });
     month.unshift(monthName);
   }
-
-  // Now monthsWithSalaries array contains objects representing each month with its associated salary
 
   useEffect(() => {
     async function fetchData() {
@@ -128,7 +65,7 @@ export default function MiniDrawer() {
       );
       const values = await res;
 
-      const projectList = values.map((item) => ({
+      const projectList: Project[] = values.map((item: any) => ({
         title: item.name,
         description: item.description,
         totalPrice: item.totalPrice,
@@ -137,7 +74,6 @@ export default function MiniDrawer() {
         finishedDate: new Date(item.finishedDate),
         id: item.id,
       }));
-      setProjects(projectList);
 
       const inProgress = projectList.filter(
         (project) => project.status === "inProgress"
@@ -151,36 +87,17 @@ export default function MiniDrawer() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    async function fetchData() {
-      const userId = 3;
-      const res = await get(
-        `http://localhost:3001/api/userSkills/alluserskillsdomains${userId}`
-      );
-      const values = await res;
-      setDomaine1(values[0].domaine);
-      if (values.length == 2) setDomaine2(values[1].domaine);
-
-      const userSkills = values.map((item) => ({
-        skill: item.skillName,
-      }));
-
-      setSkills(userSkills);
-    }
-
-    fetchData();
-  }, []);
-
-  function monthSalarySum(month: string) {
-    console.log(month);
+  function monthSalarySum(month: string): number {
     let sum = 0;
     doneProjects.forEach((item) => {
-      getMonthName(item.finishedDate) == month ? (sum += item.totalPrice) : "";
+      if (getMonthName(item.finishedDate) === month) {
+        sum += item.totalPrice;
+      }
     });
     return sum;
   }
 
-  const monthsWithSalaries = month.map((monthName) => {
+  const monthsWithSalaries: number[] = month.map((monthName) => {
     const salary = monthSalarySum(monthName);
     return salary;
   });
@@ -196,50 +113,23 @@ export default function MiniDrawer() {
       },
     ],
   };
-  const customScrollbarStyle = {
-    scrollbarWidth: "none", // Firefox
-    msOverflowStyle: "none", // IE and Edge
-    "&::WebkitScrollbar": { display: "none" }, // WebKit/Blink
+
+  const customScrollbarStyle: React.CSSProperties = {
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
   };
 
-  /////////////////////////////////////////////
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
+  // Type assertion to add vendor-specific style
+  (customScrollbarStyle as any)["&::-webkit-scrollbar"] = { display: "none" };
 
-      // Determine the screen size threshold where 'open' should be false
-      const isSmallScreen = screenWidth <= 768;
-
-      // Update the 'open' state based on the screen size
-      setOpen(!isSmallScreen);
-    };
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Initial call to set the initial state based on window width
-    handleResize();
-
-    // Cleanup: remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  function handleDrawer() {
-    if (open == true) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
-  }
+  // const [open, setOpen] = React.useState(true);
 
   const [showDone, setShowDone] = useState(false);
 
   function handleDoneProjects() {
     setShowDone(true);
   }
+
   function handleInProgressProjects() {
     setShowDone(false);
   }
@@ -285,15 +175,18 @@ export default function MiniDrawer() {
               }
             >
               {inProgressProjects.map((project) => (
-                <ColumnDirection3
-                  id={project.id}
-                  title={project.title}
-                  description={project.description}
-                  totalPrice={project.totalPrice}
-                  projectId={project.id}
-                  status={project.status}
-                  userRole="freelancer"
-                />
+                <div key={project.id}>
+                  {" "}
+                  <ColumnDirection3
+                    id={project.id}
+                    title={project.title}
+                    description={project.description}
+                    totalPrice={project.totalPrice}
+                    projectId={project.id}
+                    status={project.status}
+                    userRole="freelancer"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -307,15 +200,17 @@ export default function MiniDrawer() {
               }
             >
               {doneProjects.map((project) => (
-                <ColumnDirection3
-                  id={project.id}
-                  title={project.title}
-                  description={project.description}
-                  totalPrice={project.totalPrice}
-                  projectId={project.id}
-                  status={project.status}
-                  userRole="recruiter"
-                />
+                <div key={project.id}>
+                  <ColumnDirection3
+                    id={project.id}
+                    title={project.title}
+                    description={project.description}
+                    totalPrice={project.totalPrice}
+                    projectId={project.id}
+                    status={project.status}
+                    userRole="freelancer"
+                  />
+                </div>
               ))}
             </div>
           </div>

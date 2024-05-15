@@ -26,7 +26,10 @@ function App() {
   const [userStatus, setUserStatus] = useState({ status: "", role: "" });
 
   const localStorageId = localStorage.getItem("userId");
-  const userId = parseInt(localStorageId, 10);
+
+  // Check if localStorageId is not null before parsing
+  const userId = localStorageId !== null ? parseInt(localStorageId, 10) : 0; // Provide a default value if null
+
   useEffect(() => {
     async function fetchData() {
       const res = await get(`http://localhost:3001/api/user/${userId}`);
@@ -77,7 +80,6 @@ function App() {
           <Route path="rate" element={<Rate />} />
           <Route path="successfulPayment" element={<SuccessfulPayment />} />
           <Route path="failedPayment" element={<FailedPayment />} />
-
           <Route path="UploadForm" element={<UploadForm />} />
         </Routes>
       </BrowserRouter>
