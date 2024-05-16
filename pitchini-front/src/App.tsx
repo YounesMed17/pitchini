@@ -22,6 +22,7 @@ import FailedPayment from "./components/FailedPayment";
 import { useEffect, useState } from "react";
 import { get } from "./utilFunctions/getData";
 import UploadForm from "./UploadForm";
+import Products from "./Products";
 function App() {
   const [userStatus, setUserStatus] = useState({ status: "", role: "" });
 
@@ -81,6 +82,7 @@ function App() {
           <Route path="successfulPayment" element={<SuccessfulPayment />} />
           <Route path="failedPayment" element={<FailedPayment />} />
           <Route path="UploadForm" element={<UploadForm />} />
+          <Route path="Products" element={<Products />} />
         </Routes>
       </BrowserRouter>
     </>

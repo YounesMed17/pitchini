@@ -96,7 +96,6 @@ export default function PopUpButton() {
   };
   ////////
 
-  const [imageData, setImageData] = React.useState(null);
   const [imageUrl, setImageUrl] = React.useState("");
 
   const handleGetImage = async () => {
@@ -116,7 +115,6 @@ export default function PopUpButton() {
       console.error("Error fetching image:", error);
     }
   };
-  console.log(imageData);
 
   return (
     <>
