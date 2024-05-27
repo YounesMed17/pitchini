@@ -3,10 +3,12 @@ import { get } from "../utilFunctions/getData";
 import { Rating, Typography } from "@mui/material";
 
 interface PortfolioTestimonialsProps {
+  avatar: string;
   userId: string; // Assuming userId is a string, adjust the type accordingly
 }
 
 const PortfolioTestimonials: FunctionComponent<PortfolioTestimonialsProps> = ({
+  avatar,
   userId,
 }) => {
   const [rates, setRates] = useState<
@@ -61,7 +63,7 @@ const PortfolioTestimonials: FunctionComponent<PortfolioTestimonialsProps> = ({
         <img
           className="md:w-[150px] w-[100px] absolute md:left-[44.2%] left-[40%] md:top-[110%] top-[150%] z-[10]"
           alt=""
-          src="/avatargirl.webp"
+          src={avatar}
         />
 
         <div className="ml-[80px] mr-[50px] flex flex-wrap gap-[70px] justify-start items-start ">

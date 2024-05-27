@@ -41,6 +41,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
+    setFormData({ name: "", address: "", phoneNumber: "", city: "" });
   };
   const cities = [
     "Tunis",

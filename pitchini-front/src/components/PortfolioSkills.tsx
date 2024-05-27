@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import ProgressBar from "./ProgressBar";
 
 interface portfolioSkillsProps {
-  skills: { skill: string }[];
+  skills: { skills: string }[];
 }
 
 const PortfolioSkills: FunctionComponent<portfolioSkillsProps> = ({
@@ -31,7 +31,7 @@ const PortfolioSkills: FunctionComponent<portfolioSkillsProps> = ({
           <div className="container flex justify-center items-center mx-auto py-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {skills.map((item, index) => (
-                <ProgressBar key={index} value={74} label={item.skill} />
+                <ProgressBar key={index} value={74} label={item.skills} />
               ))}
             </div>
           </div>

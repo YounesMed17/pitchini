@@ -24,6 +24,7 @@ const UploadForm: React.FunctionComponent = () => {
 
     const formData = new FormData();
     formData.append("File", selectedFile);
+    formData.append("userId", 9);
 
     setLoading(true);
     try {
@@ -63,7 +64,7 @@ const UploadForm: React.FunctionComponent = () => {
 
     fetchPictures();
   }, []); // Empty dependency array to run effect only once
-
+  console.log(pictures[0]);
   return (
     <>
       <form onSubmit={handleSubmit}>

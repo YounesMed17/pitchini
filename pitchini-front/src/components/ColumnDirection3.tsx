@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Dialog, Slide } from "@mui/material";
 import CreateTask from "./CreateTask";
 import { get } from "../utilFunctions/getData";
@@ -7,6 +7,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import { modifyData } from "../utilFunctions/modifyData";
 import { send } from "../utilFunctions/sendData";
+import { useNavigate } from "react-router-dom";
 const Transition = Slide;
 
 const ColumnDirection3 = ({
@@ -130,6 +131,14 @@ const ColumnDirection3 = ({
       "http://localhost:3001/api/notification/"
     );
   }
+  let navigate = useNavigate();
+  const navigating = useCallback(() => {
+    navigate(`/FreelancersList/${id}`, {});
+  }, [navigate]);
+  function handleNavigation() {
+    navigating();
+  }
+
   return (
     <div className="mb-[25px] flex flex-col items-start justify-start relative gap-[10px] text-justify text-2xs text-white font-titre-grey">
       <div
@@ -144,9 +153,16 @@ const ColumnDirection3 = ({
             Create new task
           </Button>
         </div>
-        <Button variant="outlined" onClick={handleClickOpenList}>
-          check tasks
-        </Button>
+        <div className={status == "onHold" ? "hidden" : ""}>
+          <Button variant="outlined" onClick={handleClickOpenList}>
+            check tasks
+          </Button>
+        </div>
+        <div className={status != "onHold" ? "hidden" : ""}>
+          <Button variant="outlined" onClick={handleNavigation}>
+            Share project
+          </Button>
+        </div>
 
         <Dialog
           open={openD}
@@ -217,6 +233,7 @@ const ColumnDirection3 = ({
           </div>
         </Dialog>
       </div>
+
       <img
         className="w-[451px] relative rounded-sm h-[177px] opacity-[0.79]"
         alt=""

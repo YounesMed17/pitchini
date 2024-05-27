@@ -3,28 +3,32 @@ import {
   Badge,
   Box,
   Button,
+  Dialog,
   Divider,
   IconButton,
   List,
   ListItem,
   Popover,
+  Slide,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import { subDays } from "date-fns";
 import { get } from "../utilFunctions/getData";
 import { modifyData } from "../utilFunctions/modifyData";
 import { useNavigate } from "react-router-dom";
-import {
-  formatDistance,
-  differenceInSeconds,
-  differenceInDays,
-  differenceInWeeks,
-} from "date-fns";
-
+import ApplyProjectPopup from "./ApplyProjectsPopup";
+import { TransitionProps } from "@mui/material/transitions";
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 const NotificationsBadge = styled(Badge)(
   ({ theme }) => `
       
@@ -64,9 +68,12 @@ const HeaderNotifications = () => {
   const handleClose = (): void => {
     setOpen(false);
   };
+  const handleClose2 = (): void => {
+    setOpen2(false);
+  };
   useEffect(() => {
     async function fetchData() {
-      const userId = 3;
+      const userId = 9;
       const res = await get(
         `http://localhost:3001/api/notification/allUsernotifications/${userId}`
       );
@@ -80,6 +87,7 @@ const HeaderNotifications = () => {
         type: item.type,
         freelancerId: item.freelancerId,
         creationDate: item.creationDate,
+        isProjectInvite: item.isProjectInvite,
       }));
       // Sort notifications with isRead === 0 at the beginning
       notifications.sort((b, a) => b.isRead - a.isRead);
@@ -95,7 +103,7 @@ const HeaderNotifications = () => {
 
     fetchData();
   }, []);
-
+  console.log(notification);
   async function updateNotificationStatus() {
     const unreadNotification = notification.filter(
       (notification) => !notification.isRead
@@ -103,8 +111,6 @@ const HeaderNotifications = () => {
     for (let i = 0; i < unreadNotification.length; i++) {
       await modifyData(
         {
-          message: unreadNotification[i].message,
-          userId: unreadNotification[i].userId,
           isRead: 1,
         },
         `http://localhost:3001/api/notification/modifyNotification${unreadNotification[i].id}`
@@ -158,6 +164,11 @@ const HeaderNotifications = () => {
       }
     }
   };
+  const [open2, setOpen2] = useState(false);
+
+  function handleProject() {
+    setOpen2(true);
+  }
 
   return (
     <>
@@ -190,11 +201,12 @@ const HeaderNotifications = () => {
         <Box
           sx={{
             p: 2,
+
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#f1f1f1",
           }}
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          backgroundColor="#f1f1f1"
         >
           <Typography variant="h5">Notifications</Typography>
         </Box>
@@ -240,7 +252,7 @@ const HeaderNotifications = () => {
                   {item.message}
                 </Typography>
                 {/* Conditionally render buttons based on freelancerId */}
-                {item.freelancerId && (
+                {item.freelancerId && !item.isProjectInvite && (
                   <Box mt={1}>
                     <Button
                       variant="outlined"
@@ -266,6 +278,41 @@ const HeaderNotifications = () => {
                     >
                       Send Message
                     </Button>
+                  </Box>
+                )}
+                {item.isProjectInvite && (
+                  <Box mt={1}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleProject()}
+                      sx={{
+                        ml: 1,
+                        padding: "5px",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Check Project
+                    </Button>
+                    <Dialog
+                      open={open2}
+                      TransitionComponent={Transition}
+                      keepMounted
+                      onClose={handleClose2}
+                      aria-describedby="alert-dialog-slide-description"
+                      PaperProps={{
+                        style: {
+                          scrollbarWidth: "none", // Firefox
+                          WebkitOverflowScrolling: "touch", // iOS momentum scrolling
+                        },
+                      }}
+                    >
+                      <ApplyProjectPopup
+                        projectId={item.userId}
+                        freelancerId={item.freelancerId}
+                        setOpen2={setOpen2}
+                      ></ApplyProjectPopup>
+                    </Dialog>
                   </Box>
                 )}
               </Box>

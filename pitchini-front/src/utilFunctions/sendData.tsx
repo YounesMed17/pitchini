@@ -22,7 +22,6 @@ export async function send(
     const responseBody = await response.json();
 
     console.log("data registered successfully!");
-    console.log(responseBody.id);
 
     if (navigationStatus) {
       navigating();

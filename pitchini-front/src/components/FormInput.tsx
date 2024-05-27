@@ -5,7 +5,9 @@ import { TextField } from "@mui/material";
 function FormInput(props: {
   placeHolder: string;
   type: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => void;
   value: string;
   errorStatus: boolean;
   message: string;
@@ -25,10 +27,10 @@ function FormInput(props: {
           style={{
             border: "1px solid #c4c4c4",
             backgroundColor: "transparent",
-            height: "185px",
-            fontSize: "21px",
-            borderRadius: "14px",
-            padding: "16px",
+            height: "100px",
+            fontSize: "14px",
+            borderRadius: "8px",
+            padding: "12px",
             resize: "none",
             width: "100%",
             boxSizing: "border-box",
@@ -37,7 +39,7 @@ function FormInput(props: {
         />
       ) : (
         <TextField
-          className="[border:none] bg-[transparent] self-stretch h-[85px] font-join-text font-medium text-darkgray"
+          className="bg-transparent self-stretch font-medium text-darkgray"
           placeholder={placeHolder}
           onChange={onChange}
           variant="outlined"
@@ -46,16 +48,16 @@ function FormInput(props: {
           sx={{
             "& fieldset": { borderColor: "#c4c4c4" },
             "& .MuiInputBase-root": {
-              height: "65px",
-              borderRadius: "14px",
-              fontSize: "21px",
+              height: "50px",
+              borderRadius: "8px",
+              fontSize: "14px",
             },
             "& .MuiInputBase-input": { color: "#a09d9d" },
           }}
         />
       )}
       <div className={!errorStatus ? "hidden" : ""}>
-        <p className="mt-[-17px] text-red-500 text-[16px]">{message}</p>
+        <p className="mt-[-10px] text-red-500 text-[12px]">{message}</p>
       </div>
     </>
   );

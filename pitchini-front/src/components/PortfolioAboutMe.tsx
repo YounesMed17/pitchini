@@ -1,11 +1,13 @@
 import { FunctionComponent } from "react";
 
 interface PortfolioAboutMeProps {
+  avatar: string;
   bio: string;
   description: string;
 }
 
 const PortfolioAboutMe: FunctionComponent<PortfolioAboutMeProps> = ({
+  avatar,
   bio,
   description,
 }) => {
@@ -35,7 +37,7 @@ const PortfolioAboutMe: FunctionComponent<PortfolioAboutMeProps> = ({
           <img
             className=" md:w-[200px] w-[150px] md:mt-[0] mt-[30px]"
             alt=""
-            src="/avatargirl.webp"
+            src={avatar}
           />
         </div>
         <div className="md:w-[800px] ml-[60px] w-[350px] text-lg-2 leading-[146%] text-darkgray-1100 text-justify">

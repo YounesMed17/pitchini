@@ -143,75 +143,70 @@ export default function MiniDrawer() {
         className="md:ml-[50px] ml-[5px]"
       >
         <DrawerHeader />
-        <div className="mb-[50px] flex flex-row items-start justify-start ml-[50px] text-left text-13xl text-dimgray-400">
+        <div className="mt-[50px] mb-[50px] flex flex-row items-start justify-start ml-[50px] text-left text-13xl text-dimgray-400">
           <div className="tracking-[0.02em]  leading-[131%] font-extrabold !bg-clip-text [background:linear-gradient(99.26deg,_#fe504b,_#f9c928)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block h-[89px] shrink-0">
             <p className="m-0">The Only Place To</p>
             <p className="m-0">Look For Your Projets</p>
           </div>
         </div>
         <div className="flex flex-col justify-start  items-start flex-wrap">
-          <div className="flex gap-[35px]">
-            <div
-              className=" tracking-[-0.01em] leading-[145.45%] font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] h-11 shrink-0"
-              onClick={handleDoneProjects}
-            >
-              Done Projects
+          <div className="flex flex-col gap-[35px]">
+            <div className="flex flex-col justify-start items-start">
+              <div
+                className="tracking-[-0.01em] leading-[145.45%] font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] h-11 shrink-0"
+                onClick={handleInProgressProjects}
+              >
+                In Progress Projects
+              </div>
+              <div
+                style={customScrollbarStyle}
+                className="custom-scrollbar w-screen max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg gap-5"
+              >
+                {inProgressProjects.map((project) => (
+                  <div key={project.id}>
+                    {" "}
+                    <ColumnDirection3
+                      id={project.id}
+                      title={project.title}
+                      description={project.description}
+                      totalPrice={project.totalPrice}
+                      projectId={project.id}
+                      status={project.status}
+                      userRole="recruiter"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-
-            <div
-              className=" tracking-[-0.01em] leading-[145.45%] font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] h-11 shrink-0"
-              onClick={handleInProgressProjects}
-            >
-              In Progress Projects
-            </div>
-          </div>
-          <div className="flex flex-col justify-start items-start">
-            <div
-              style={customScrollbarStyle}
-              className={
-                !showDone
-                  ? "custom-scrollbar w-screen max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg gap-5"
-                  : "hidden"
-              }
-            >
-              {inProgressProjects.map((project) => (
-                <div key={project.id}>
-                  {" "}
-                  <ColumnDirection3
-                    id={project.id}
-                    title={project.title}
-                    description={project.description}
-                    totalPrice={project.totalPrice}
-                    projectId={project.id}
-                    status={project.status}
-                    userRole="freelancer"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col justify-start items-start">
-            <div
-              style={customScrollbarStyle}
-              className={
-                showDone
-                  ? "custom-scrollbar w-screen max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg gap-5"
-                  : "hidden"
-              }
-            >
-              {doneProjects.map((project) => (
-                <div key={project.id}>
-                  <ColumnDirection3
-                    id={project.id}
-                    title={project.title}
-                    description={project.description}
-                    totalPrice={project.totalPrice}
-                    projectId={project.id}
-                    status={project.status}
-                    userRole="freelancer"
-                  />
-                </div>
-              ))}
+            <div className="flex flex-col justify-start items-start">
+              <div
+                className=" tracking-[-0.01em] leading-[145.45%] font-semibold  !bg-clip-text [background:linear-gradient(99.26deg,_#000)] [-webkit-background-clip:text] h-11 shrink-0"
+                onClick={handleDoneProjects}
+              >
+                Done Projects
+              </div>
+              <div
+                style={customScrollbarStyle}
+                className={
+                  showDone
+                    ? "custom-scrollbar w-screen max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg gap-5"
+                    : "hidden"
+                }
+              >
+                {doneProjects.map((project) => (
+                  <div key={project.id}>
+                    <ColumnDirection3
+                      id={project.id}
+                      title={project.title}
+                      description={project.description}
+                      totalPrice={project.totalPrice}
+                      projectId={project.id}
+                      status={project.status}
+                      userRole="recruiter"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

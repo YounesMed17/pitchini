@@ -1,0 +1,32 @@
+.baground {
+  background-color: aqua;
+  height: 30px;
+  width: 70px;
+  bottom: 5px;
+  position: relative;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  font-size: 17px;
+}
+.SIZE {
+  font-size: 90px;
+}
+.HABET {
+  margin-top: 80px;
+  height: 1000px;
+}
+.JNAB {
+  height: 770px;
+  background-color: black;
+}
+.zid {
+  height: 1000px;
+}
+.flex {
+  display: flex;
+  gap: 10px;
+}
+.aa:hover {
+  text-decoration: underline;
+}

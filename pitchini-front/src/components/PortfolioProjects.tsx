@@ -11,13 +11,12 @@ const PortfolioProjects: FunctionComponent<PortfolioProjectsProps> = ({
     // Fetch pictures when the component mounts
     const fetchPictures = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/file/all");
-        if (response.ok) {
-          const data = await response.json();
-          setPictures(data); // Update state with fetched pictures
-        } else {
-          console.error("Failed to fetch pictures");
-        }
+        const response = await fetch(
+          `http://localhost:3001/api/file/user/${userId}`
+        );
+
+        const data = await response.json();
+        setPictures(data);
       } catch (error) {
         console.error("Error fetching pictures:", error);
       }
@@ -25,7 +24,6 @@ const PortfolioProjects: FunctionComponent<PortfolioProjectsProps> = ({
 
     fetchPictures();
   }, []); // Empty dependency array to run effect only once
-
   return (
     <div className="self-stretch flex flex-col items-start justify-start gap-[85px] shrink-0 [debug_commit:1de1738] max-w-full text-center text-mini text-dimgray-1000 font-titre-grey lg:gap-[42px] mq750:gap-[21px]">
       <div className="self-stretch flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">

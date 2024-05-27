@@ -29,6 +29,7 @@ interface UserData {
   bio: string;
   description: string;
   skills: SkillData[];
+  avatar: string;
 }
 
 interface DomainData {
@@ -53,6 +54,7 @@ const Portfolio: FunctionComponent = () => {
     bio: "",
     description: "",
     skills: [],
+    avatar: "",
   });
 
   const { userId } = useParams();
@@ -72,6 +74,7 @@ const Portfolio: FunctionComponent = () => {
         jobTitle: values.jobTitle,
         bio: values.bio,
         description: values.description,
+        avatar: values.avatar,
       };
 
       setUser(userValues);
@@ -82,9 +85,8 @@ const Portfolio: FunctionComponent = () => {
   }, []);
   useEffect(() => {
     async function fetchData2() {
-      const userId = 4;
       const res = await get(
-        `http://localhost:3001/api/userSkills/alluserskillsdomains${userId}`
+        `http://localhost:3001/api/userSkills/alluserskillsdomains/${userId}`
       );
       const values = await res;
 
@@ -98,6 +100,7 @@ const Portfolio: FunctionComponent = () => {
         skills: item.skillName,
         domain: item.domaine,
       }));
+      console.log(userSkills, "sisisisisi");
 
       setEditedUserData((prevUserData) => ({
         ...prevUserData,
@@ -109,7 +112,6 @@ const Portfolio: FunctionComponent = () => {
 
     fetchData2();
   }, []);
-
   /////////////////
 
   useEffect(() => {
@@ -133,17 +135,7 @@ const Portfolio: FunctionComponent = () => {
     fetchData();
   }, [editedUserData]);
   ///////////////////
-  console.log(
-    allSkills,
-    "aaaaaaaaa",
-    domainAndSkills,
-    "1111111",
-    domains,
-    "0000000",
-    skills,
-    "111",
-    editedUserData.skills
-  );
+
   useEffect(() => {
     async function fetchData3() {
       const res = await get(
@@ -166,32 +158,9 @@ const Portfolio: FunctionComponent = () => {
   const handleFieldChange = (field: keyof UserData, value: string) => {
     setEditedUserData((prev) => ({ ...prev, [field]: value }));
   };
-  async function deleteData() {
-    const userId = 4;
-    await fetch(
-      `http://localhost:3001/api/userskills/alluserskillsdomains/${userId}`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data); // Output the response data ("Operation successful" message)
-        // Handle success - for example, update UI or display a success message
-      })
-      .catch((error) => {
-        console.error("Error deleting user skills:", error);
-        // Handle error - display an error message to the user or handle accordingly
-      });
-  }
+
   function voided() {}
   const handleSaveChanges = async () => {
-    const userId = 4;
     setUser(editedUserData);
     await modifyData(
       editedUserData,
@@ -224,12 +193,12 @@ const Portfolio: FunctionComponent = () => {
     }
   };
 
-  console.log(addedSkills, "00000000000000000000000");
   return (
     <div className="mt-[50px] w-full bg-white overflow-hidden flex items-center justify-center pt-0 px-0 pb-[0.2px] box-border leading-[normal] tracking-[normal]">
       <SideBar></SideBar>
       <div className=" w-full flex flex-col items-center justify-center">
         <PortfolioHeader
+          avatar={user?.avatar}
           nickname={user?.nickname}
           jobTitle={user?.jobTitle}
         ></PortfolioHeader>
@@ -242,13 +211,17 @@ const Portfolio: FunctionComponent = () => {
           Edit Profile
         </Button>
         <PortfolioAboutMe
+          avatar={user?.avatar}
           bio={user?.bio}
           description={user?.description}
         ></PortfolioAboutMe>
         <PortfolioServices domains={domains}></PortfolioServices>
         <PortfolioSkills skills={skills}></PortfolioSkills>
         <PortfolioProjects userId={userId}></PortfolioProjects>
-        <PortfolioTestimonials userId={userId}></PortfolioTestimonials>
+        <PortfolioTestimonials
+          avatar={user?.avatar}
+          userId={userId}
+        ></PortfolioTestimonials>
 
         {/* Edit Profile Modal */}
         <Dialog open={editOpen} onClose={handleEditClose}>

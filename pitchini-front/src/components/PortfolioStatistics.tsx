@@ -13,7 +13,6 @@ const PortfolioStatistics: FunctionComponent = ({ projectCount, userId }) => {
 
     fetchData();
   }, []);
-  console.log(avgRate);
 
   return (
     <div className="flex justify-center items-center ">

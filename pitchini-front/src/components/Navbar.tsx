@@ -1,130 +1,88 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { menu } from "./menu/data";
-import MenuItem from "./menu/MenuItem";
+import { FunctionComponent, useMemo, CSSProperties } from "react";
 
-const Navbar = () => {
-  const [isFullScreen, setIsFullScreen] = React.useState(true);
-  const element = document.getElementById("root");
+export type FrameComponent1Type = {
+  /** Style props */
+  frameHeaderAlignSelf?: CSSProperties["alignSelf"];
+  frameHeaderFlex?: CSSProperties["flex"];
 
-  const [isDrawerOpen, setDrawerOpen] = React.useState(false);
-  const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
+  /** Action props */
+  onLogoPitchini1Click?: () => void;
+  onContactTextClick?: () => void;
+  onLoginTextClick?: () => void;
+  onButtonContainerClick?: () => void;
+};
 
-  const toggleFullScreen = () => {
-    setIsFullScreen((prev) => !prev);
-  };
-
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    if (isFullScreen) {
-      document.exitFullscreen();
-    } else {
-      element?.requestFullscreen({ navigationUI: "auto" });
-    }
-  }, [element, isFullScreen]);
+const Navbar: FunctionComponent<FrameComponent1Type> = ({
+  frameHeaderAlignSelf,
+  frameHeaderFlex,
+  onLogoPitchini1Click,
+  onContactTextClick,
+  onLoginTextClick,
+  onButtonContainerClick,
+}) => {
+  const frameHeaderStyle: CSSProperties = useMemo(() => {
+    return {
+      alignSelf: frameHeaderAlignSelf,
+      flex: frameHeaderFlex,
+    };
+  }, [frameHeaderAlignSelf, frameHeaderFlex]);
 
   return (
-    // navbar screen
-    <div className="fixed z-[3] top-0 left-0 right-0 bg-base-100 w-full flex justify-between px-3 xl:px-4 py-3 xl:py-5 gap-4 xl:gap-0">
-      {/* container */}
-      <div className="flex gap-3 items-center">
-        {/* for mobile */}
-        <div className="drawer w-auto p-0 mr-1 xl:hidden">
-          <input
-            id="drawer-navbar-mobile"
-            type="checkbox"
-            className="drawer-toggle"
-            checked={isDrawerOpen}
-            onChange={toggleDrawer}
-          />
-          <div className="p-0 w-auto drawer-content">
-            <label
-              htmlFor="drawer-navbar-mobile"
-              className="p-0 btn btn-ghost drawer-button"
-            ></label>
-          </div>
-          <div className="drawer-side z-[99]">
-            <label
-              htmlFor="drawer-navbar-mobile"
-              aria-label="close sidebar"
-              className="drawer-overlay"
-            ></label>
-            <div className="menu p-4 w-auto min-h-full bg-base-200 text-base-content">
-              <Link
-                to={"/"}
-                className="flex items-center gap-1 xl:gap-2 mt-1 mb-5"
-              >
-                <span className="text-[16px] leading-[1.2] sm:text-lg xl:text-xl 2xl:text-2xl font-semibold text-base-content dark:text-neutral-200">
-                  React Dashboard
-                </span>
-              </Link>
-              {menu.map((item, index) => (
-                <MenuItem
-                  onClick={toggleDrawer}
-                  key={index}
-                  catalog={item.catalog}
-                  listItems={item.listItems}
-                />
-              ))}
+    <header
+      className="self-stretch bg- flex flex-row items-start justify-between pt-[17px] pb-[18px] pr-[42px] pl-[41px] box-border top-[0] z-[99]  w-full gap-[20px] text-center text-xl text-gray-200 font-titre-grey mq950:pr-[21px] mq950:box-border"
+      style={frameHeaderStyle}
+    >
+      <div className="h-[127px] w-[1512px] relative bg-whitesmoke hidden max-w-full" />
+      <img
+        className="h-[92px] w-[304px] relative object-cover cursor-pointer z-[1]"
+        loading="lazy"
+        alt=""
+        src="/logo-pitchini-1@2x.png"
+        onClick={onLogoPitchini1Click}
+      />
+      <div className="w-[596px] flex flex-col items-start justify-start pt-[26px] px-0 pb-0 box-border max-w-full mq950:w-0">
+        <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq950:hidden">
+          <div className="w-[74px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
+            <div
+              className="self-stretch relative tracking-[-0.01em] font-medium inline-block min-w-[74px] z-[1] cursor-pointer hover:underline"
+              onClick={onContactTextClick}
+            >
+              Policies
             </div>
           </div>
-        </div>
-
-        {/* navbar logo */}
-        <Link to={"/"} className="flex items-center gap-1 xl:gap-2">
-          <span className="text-[16px] leading-[1.2] sm:text-lg xl:text-xl 2xl:text-2xl font-semibold text-base-content dark:text-neutral-200">
-            React Dashboard
-          </span>
-        </Link>
-      </div>
-
-      {/* navbar items to right */}
-      <div className="flex items-center gap-0 xl:gap-1 2xl:gap-2 3xl:gap-5">
-        {/* search */}
-        <button className="hidden sm:inline-flex btn btn-circle btn-ghost"></button>
-
-        {/* fullscreen */}
-        <button
-          onClick={toggleFullScreen}
-          className="hidden xl:inline-flex btn btn-circle btn-ghost"
-        ></button>
-
-        {/* notification */}
-        <button className="px-0 xl:px-auto btn btn-circle btn-ghost"></button>
-
-        {/* theme */}
-
-        {/* avatar dropdown */}
-        <div className="dropdown dropdown-end">
+          <div className="w-[85px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
+            <div className="self-stretch relative tracking-[-0.01em] font-medium inline-block min-w-[85px] z-[1] cursor-pointer hover:underline">
+              Discover
+            </div>
+          </div>
+          <div className="w-[81px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
+            <div
+              className="self-stretch relative tracking-[-0.01em] font-medium inline-block min-w-[81px] cursor-pointer hover:underline"
+              onClick={onContactTextClick}
+            >
+              Contact
+            </div>
+          </div>
+          <div className="w-[53px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
+            <div
+              className="self-stretch relative tracking-[-0.01em] font-medium inline-block min-w-[53px] cursor-pointer hover:underline"
+              onClick={onLoginTextClick}
+            >
+              Login
+            </div>
+          </div>
           <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
+            className="flex flex-row items-start justify-start py-2 px-[21.5px] relative cursor-pointer z-[1] text-white font-montserrat"
+            onClick={onButtonContainerClick}
           >
-            <div className="w-9  rounded-full">
-              <img
-                src="https://avatars.githubusercontent.com/u/74099030?v=4"
-                alt="foto-cowok-ganteng"
-              />
+            <div className="h-full w-full absolute !m-[0] top-[0px] right-[0px] bottom-[0px] left-[0px] rounded-md bg-black" />
+            <div className="w-[42px] relative tracking-[-0.01em] font-medium inline-block min-w-[42px] cursor-pointer hover:underline">
+              Join
             </div>
           </div>
-          <ul
-            tabIndex={0}
-            className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-40"
-          >
-            <Link to={"/profile"}>
-              <li>
-                <a className="justify-between">My Profile</a>
-              </li>
-            </Link>
-            <li onClick={() => navigate("/login")}>
-              <a>Log Out</a>
-            </li>
-          </ul>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

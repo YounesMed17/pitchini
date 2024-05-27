@@ -6,7 +6,6 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import FormAplication from "./components/FormAplication";
 import Nav from "./components/Nav";
-import { get } from "./utilFunctions/getData";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {

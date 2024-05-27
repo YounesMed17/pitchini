@@ -2,11 +2,14 @@ import { Button } from "@mui/material";
 import { FunctionComponent } from "react";
 
 interface PortfolioHeaderProps {
+  avatar: string;
   nickname: string;
   jobTitle: string;
+  scrollToRef: any;
 }
 
 const PortfolioHeader: FunctionComponent<PortfolioHeaderProps> = ({
+  avatar,
   nickname,
   jobTitle,
 }) => {
@@ -23,25 +26,7 @@ const PortfolioHeader: FunctionComponent<PortfolioHeaderProps> = ({
           <div className="w-[218px]  text-xl leading-[31px] uppercase text-darkslategray-200 inline-block z-[2] mq450:text-base mq450:leading-[23px]">
             {jobTitle}
           </div>
-          <div className="mt-[40px] flex flex-row flex-wrap  gap-[13px] max-w-full text-center text-mini-6 text-dimgray-200 font-montserrat">
-            <Button
-              className=" w-[146.2px]  shrink-0 [debug_commit:1de1738] z-[2]"
-              disableElevation={true}
-              variant="contained"
-              sx={{
-                textTransform: "none",
-                color: "#fff",
-                fontSize: "14.6",
-                background: "linear-gradient(99.26deg, )",
-                borderRadius: "4px 4px 4px 4px",
-                "&:hover": { background: "linear-gradient(99.26deg, )" },
-                width: 146.2,
-                height: 66.2,
-              }}
-            >
-              Portfolio
-            </Button>
-          </div>
+          <div className="mt-[40px] flex flex-row flex-wrap  gap-[13px] max-w-full text-center text-mini-6 text-dimgray-200 font-montserrat"></div>
         </div>
       </div>
 
@@ -49,7 +34,7 @@ const PortfolioHeader: FunctionComponent<PortfolioHeaderProps> = ({
         <img
           className=" md:w-[250px] w-[150px] md:mt-[0] mt-[30px]"
           alt=""
-          src="/avatargirl.webp"
+          src={avatar}
         />
       </div>
     </div>

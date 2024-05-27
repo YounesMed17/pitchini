@@ -15,10 +15,13 @@ const PortfolioServices: FunctionComponent<portfolioServicesProps> = ({
               Service
             </div>
             <h1 className="m-0 self-stretch h-[53px] relative text-21xl font-semibold font-inherit text-orange inline-block shrink-0 [text-shadow:0.7px_0_0_rgba(0,_0,_0,_0),_0_0.7px_0_rgba(0,_0,_0,_0),_-0.7px_0_0_rgba(0,_0,_0,_0),_0_-0.7px_0_rgba(0,_0,_0,_0)] mq450:text-5xl mq1050:text-13xl">
-              What I Need
+              What I Do
             </h1>
           </div>
-          <div className="self-stretch relative text-sm leading-[21px] text-grey2">{`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi commodo orci odio, ut bus sed. `}</div>
+          <div className="self-stretch relative text-sm leading-[21px] text-grey2">
+            I practiced a lot in these domains, I did some project you can check
+            them down there
+          </div>
         </div>
       </div>
       <div className="self-stretch  py-0 pr-[0.1px] pl-0 gap-[23px] text-lgi text-orange flex justify-center items-center flex-col md:flex-row  ">

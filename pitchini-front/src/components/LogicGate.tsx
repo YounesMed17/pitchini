@@ -1,7 +1,14 @@
 import { FunctionComponent } from "react";
 import HeaderNotifications from "./notifiHeader";
+import { useNavigate } from "react-router-dom";
 
 const LogicGate: FunctionComponent = () => {
+  const navigate = useNavigate();
+
+  function logout() {
+    localStorage.clear();
+    navigate("/login-freelancer");
+  }
   return (
     <>
       <div className="  flex-1 bg-whitesmoke-100 flex flex-row items-start justify-end pt-[23px] px-[141.3px] pb-[23.1px] box-border gap-[25.8px] max-w-full text-center text-base-1 text-gray-200 font-titre-grey mq450:pl-5 mq450:pr-5 mq450:box-border mq750:pl-[70px] mq750:pr-[70px] mq750:box-border">
@@ -25,8 +32,11 @@ const LogicGate: FunctionComponent = () => {
           />
         </div>
         <div className="w-[50px] flex flex-col items-start justify-start pt-[13.2px] px-0 pb-0 box-border">
-          <div className="self-stretch h-[23px] relative tracking-[-0.01em] font-medium flex items-center justify-center z-[1]">
-            Orders
+          <div
+            className="self-stretch h-[23px] relative tracking-[-0.01em] font-medium flex items-center justify-center z-[1]"
+            onClick={logout}
+          >
+            Logout
           </div>
         </div>
         <img
